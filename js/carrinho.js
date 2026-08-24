@@ -107,7 +107,7 @@ function renderBarraFrete() {
       <i class="bi bi-truck fs-5" style="color:#c4b5fd"></i>
       <span>Faltam apenas <strong class="text-white">${brl(falta)}</strong> para você ganhar <strong>frete grátis</strong>!</span>
     </div>
-    <div class="progress" style="height:8px;background:rgba(255,255,255,.07)">
+    <div class="progress" style="height:8px;background:var(--ch-border)">
       <div class="progress-bar" role="progressbar" style="width:${pct}%;background:var(--ch-gradient)"
         aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100"></div>
     </div>`;
@@ -123,8 +123,8 @@ function renderLista(itens) {
       <div class="d-flex gap-3">
 
         <a href="produto.html?id=${p.id}" class="flex-shrink-0">
-          <img src="${imagemProduto(p, 0, 200, 250)}" alt="${p.nome}" class="cart-item-img"
-            onerror="this.onerror=null;this.src='${fallbackImagem(p.id + "-mini", 184, 220)}'">
+          <img src="${imagemPrincipal(p)}" alt="${p.nome}" class="cart-item-img"
+            onerror="this.onerror=null;this.src='${fallbackImagem(p.id + "-mini")}'">
         </a>
 
         <div class="flex-grow-1 d-flex flex-column">

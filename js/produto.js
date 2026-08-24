@@ -16,13 +16,17 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   document.title = `${produtoAtual.nome} | CosplayHub`;
+  registrarVisto(produtoAtual.id);
   renderizarGaleria();
   renderizarInformacoes();
   renderizarTamanhos();
   wireQuantidade();
   wireBotoesAcao();
+  wireFormAvaliacao();
   renderizarAvaliacoes();
   renderizarRelacionados();
+  renderizarRecentes();
+  aplicarReveals();
 
   document.getElementById("conteudo-produto").classList.remove("d-none");
 });
@@ -33,14 +37,20 @@ function renderizarGaleria() {
   const principal = document.getElementById("imagem-principal");
   const thumbs = document.getElementById("lista-thumbs");
 
-  const urls = [0, 1, 2].map((i) => imagemProduto(produtoAtual, i));
+  const urls = galeriaProduto(produtoAtual);
 
-  principal.src = urls[0];
-  principal.alt = produtoAtual.nome;
+  principal.onload = () => {
+    principal.classList.add("carregada");
+    const wrap = document.getElementById("principal-wrap");
+    if (wrap) wrap.classList.add("ok");
+  };
   principal.onerror = () => {
     principal.onerror = null;
     principal.src = fallbackImagem(`${produtoAtual.id}-0`);
   };
+
+  principal.src = urls[0];
+  principal.alt = produtoAtual.nome;
 
   thumbs.innerHTML = urls
     .map(
@@ -48,7 +58,7 @@ function renderizarGaleria() {
     <button type="button" class="thumb-btn ${i === 0 ? "active" : ""}" data-src="${url}"
       aria-label="Imagem ${i + 1}">
       <img src="${url}" alt="" loading="lazy"
-        onerror="this.onerror=null;this.src='${fallbackImagem(produtoAtual.id + "-" + i, 160, 180)}'">
+        onerror="this.onerror=null;this.src='${fallbackImagem(produtoAtual.id + "-" + i)}'">
     </button>`
     )
     .join("");
@@ -183,6 +193,34 @@ function wireBotoesAcao() {
       isFav(produtoAtual.id) ? "success" : "info"
     );
   });
+
+  const btnShare = document.getElementById("btn-compartilhar");
+  if (btnShare) btnShare.addEventListener("click", compartilharProduto);
+}
+
+async function compartilharProduto() {
+  const url = location.href;
+  const dados = {
+    title: `${produtoAtual.nome} | CosplayHub`,
+    text: `Confira "${produtoAtual.nome}" na CosplayHub!`,
+    url,
+  };
+  try {
+    if (navigator.share) {
+      await navigator.share(dados);
+    } else {
+      await navigator.clipboard.writeText(url);
+      showToast("Link copiado para a área de transferência!", "info");
+    }
+  } catch (erro) {
+    if (erro && erro.name === "AbortError") return;
+    try {
+      await navigator.clipboard.writeText(url);
+      showToast("Link copiado para a área de transferência!", "info");
+    } catch {
+      window.prompt("Copie o link do produto:", url);
+    }
+  }
 }
 
 function sincronizarBotaoFav() {
@@ -193,6 +231,35 @@ function sincronizarBotaoFav() {
 }
 
 /* ---------------- Avaliações ---------------- */
+
+function iniciaisNome(nome) {
+  return nome
+    .split(/\s+/)
+    .map((parte) => parte[0] || "")
+    .join("")
+    .replace(".", "")
+    .toUpperCase()
+    .slice(0, 2);
+}
+
+function cardAvaliacaoUsuario(a) {
+  return `
+  <div class="col-md-4">
+    <div class="rounded-3 p-3 h-100"
+      style="background:rgba(var(--ch-primary-rgb),.07);border:1px solid rgba(var(--ch-primary-rgb),.35)">
+      <div class="d-flex align-items-center gap-2 mb-2">
+        <span class="review-avatar">${iniciaisNome(a.nome)}</span>
+        <div>
+          <strong class="d-block small">${escapeHTML(a.nome)}</strong>
+          ${estrelasHTML(a.nota)}
+        </div>
+        <i class="bi bi-person-check-fill ms-auto" title="Avaliação de cliente do site" style="color:var(--ch-primary)"></i>
+      </div>
+      <p class="small text-muted-2 mb-1">${escapeHTML(a.texto)}</p>
+      <small class="text-muted-2"><i class="bi bi-clock me-1"></i>${new Date(a.data).toLocaleDateString("pt-BR")}</small>
+    </div>
+  </div>`;
+}
 
 function renderizarAvaliacoes() {
   const nomes = ["Marina R.", "João Pedro S.", "Camila T.", "Diego F.", "Beatriz L.", "Rafael M."];
@@ -206,7 +273,7 @@ function renderizarAvaliacoes() {
   ];
   const inicio = produtoAtual.id % nomes.length;
 
-  const html = [0, 1, 2].map((i) => {
+  const fake = [0, 1, 2].map((i) => {
     const idx = (inicio + i) % nomes.length;
     const iniciais = nomes[idx]
       .split(" ")
@@ -229,7 +296,58 @@ function renderizarAvaliacoes() {
     </div>`;
   }).join("");
 
-  document.getElementById("lista-avaliacoes").innerHTML = html;
+  const usuarios = getUserReviews(produtoAtual.id).slice().reverse();
+  document.getElementById("lista-avaliacoes").innerHTML = usuarios.map(cardAvaliacaoUsuario).join("") + fake;
+
+  const total = produtoAtual.numAvaliacoes + usuarios.length;
+  document.getElementById("qtd-avaliacoes").textContent = total;
+  document.getElementById("qtd-avaliacoes-tab").textContent = total;
+}
+
+function wireFormAvaliacao() {
+  const form = document.getElementById("form-avaliacao");
+  if (!form || !produtoAtual) return;
+
+  const sessao = getSession();
+  if (sessao) document.getElementById("avaliador-nome").value = sessao.nome;
+
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const erro = document.getElementById("avaliacao-erro");
+    const mostrarErro = (msg) => {
+      erro.textContent = msg;
+      erro.classList.remove("d-none");
+    };
+
+    const marcada = form.querySelector('input[name="nota"]:checked');
+    const nota = marcada ? Number(marcada.value) : 0;
+    const nome = document.getElementById("avaliador-nome").value.trim();
+    const texto = document.getElementById("avaliador-texto").value.trim();
+
+    erro.classList.add("d-none");
+    if (!nota) return mostrarErro("Escolha uma nota em estrelas.");
+    if (nome.length < 2) return mostrarErro("Informe seu nome.");
+    if (texto.length < 10) return mostrarErro("O comentário precisa ter pelo menos 10 caracteres.");
+
+    addUserReview(produtoAtual.id, { nome, nota, texto, data: Date.now() });
+    form.reset();
+    renderizarAvaliacoes();
+    showToast("Avaliação publicada. Obrigado por compartilhar!", "success");
+  });
+}
+
+/* ---------------- Vistos recentemente ---------------- */
+
+function renderizarRecentes() {
+  const secao = document.getElementById("secao-recentes");
+  const grid = document.getElementById("grid-recentes-produto");
+  if (!secao || !grid) return;
+
+  const recentes = produtosRecentes(8).filter((p) => p.id !== produtoAtual.id).slice(0, 4);
+  if (recentes.length === 0) return;
+
+  grid.innerHTML = recentes.map(productCardHTML).join("");
+  secao.classList.remove("d-none");
 }
 
 /* ---------------- Relacionados ---------------- */

@@ -35,8 +35,10 @@
         <div class="col-lg-6">
           <div class="filter-card p-3 sticky-top-2 position-relative">
             <span class="discount-badge d-none" id="selo-desconto"></span>
-            <img id="imagem-principal" src="" alt="" class="w-100 rounded-4"
-              style="aspect-ratio:4/5;object-fit:cover;">
+            <div class="img-skeleton rounded-4" id="principal-wrap">
+              <img id="imagem-principal" src="" alt="" class="w-100 rounded-4 img-fade"
+                style="aspect-ratio:4/5;object-fit:cover;">
+            </div>
             <div class="d-flex gap-2 mt-3 flex-wrap" id="lista-thumbs"></div>
           </div>
         </div>
@@ -62,7 +64,7 @@
               <span class="discount-badge position-static d-none" id="badge-desconto-inline"></span>
             </div>
             <p class="text-muted-2 small mt-2 mb-0">
-              Em até <strong class="text-white">3x de <span id="parcela-sem-juros"></span></strong> sem juros
+              Em até <strong>3x de <span id="parcela-sem-juros"></span></strong> sem juros
               ou <strong class="text-success">5% OFF</strong> no Pix
             </p>
           </div>
@@ -102,11 +104,15 @@
               <i class="bi bi-bag-plus me-2"></i>Adicionar ao carrinho
             </button>
             <button class="btn btn-light btn-lg px-4 flex-grow-1" id="btn-comprar-agora">
-              <i class="bi bi-lightning-charge-fill me-2 text-dark"></i>Comprar agora
+              <i class="bi bi-lightning-charge-fill me-2"></i>Comprar agora
             </button>
             <button class="fav-btn position-static border-subtle" style="width:52px;height:52px;font-size:1.25rem;"
               id="btn-favoritar" aria-label="Favoritar produto">
               <i class="bi bi-heart"></i>
+            </button>
+            <button class="fav-btn position-static border-subtle" style="width:52px;height:52px;font-size:1.25rem;"
+              id="btn-compartilhar" aria-label="Compartilhar produto" title="Compartilhar">
+              <i class="bi bi-share"></i>
             </button>
           </div>
 
@@ -164,16 +170,52 @@
             <ul class="list-unstyled mb-0" id="lista-especificacoes"></ul>
           </div>
           <div class="tab-pane fade" id="tab-avaliacoes" role="tabpanel">
+            <div class="bg-surface-2 border-subtle rounded-3 p-3 p-md-4 mb-4">
+              <h6 class="fw-bold mb-1"><i class="bi bi-pencil-square me-2"></i>Deixe sua avaliação</h6>
+              <p class="text-muted-2 small mb-3">Sua nota e comentário ficam salvos neste navegador.</p>
+              <form id="form-avaliacao" novalidate class="row g-3 align-items-end">
+                <div class="col-12 col-md-auto">
+                  <label class="form-label small fw-semibold d-block mb-1">Sua nota</label>
+                  <div class="rating-input" id="rating-input">
+                    <input type="radio" name="nota" id="nota-5" value="5"><label for="nota-5" aria-label="5 estrelas"><i class="bi bi-star-fill"></i></label>
+                    <input type="radio" name="nota" id="nota-4" value="4"><label for="nota-4" aria-label="4 estrelas"><i class="bi bi-star-fill"></i></label>
+                    <input type="radio" name="nota" id="nota-3" value="3"><label for="nota-3" aria-label="3 estrelas"><i class="bi bi-star-fill"></i></label>
+                    <input type="radio" name="nota" id="nota-2" value="2"><label for="nota-2" aria-label="2 estrelas"><i class="bi bi-star-fill"></i></label>
+                    <input type="radio" name="nota" id="nota-1" value="1"><label for="nota-1" aria-label="1 estrela"><i class="bi bi-star-fill"></i></label>
+                  </div>
+                </div>
+                <div class="col-12 col-md-4">
+                  <label for="avaliador-nome" class="form-label small fw-semibold mb-1">Seu nome</label>
+                  <input type="text" class="form-control" id="avaliador-nome" placeholder="Como você quer aparecer?" maxlength="40" required>
+                </div>
+                <div class="col-12">
+                  <label for="avaliador-texto" class="form-label small fw-semibold mb-1">Comentário</label>
+                  <textarea class="form-control" id="avaliador-texto" rows="2" maxlength="300"
+                    placeholder="Conte como foi sua experiência com o produto..." required></textarea>
+                </div>
+                <div class="col-12 d-flex gap-2 flex-wrap align-items-center">
+                  <button type="submit" class="btn btn-gradient btn-sm px-4"><i class="bi bi-send me-1"></i>Enviar avaliação</button>
+                  <span class="small text-danger d-none" id="avaliacao-erro" role="alert"></span>
+                </div>
+              </form>
+            </div>
             <div class="row g-4" id="lista-avaliacoes"></div>
           </div>
         </div>
       </section>
 
       <!-- Relacionados -->
-      <section>
+      <section class="mb-5">
         <h2 class="font-display fw-bold h3 mb-1">Você também pode <span class="text-gradient">gostar</span></h2>
         <div class="section-title-bar mt-2 mb-4"></div>
         <div class="row g-3 g-md-4 row-cols-2 row-cols-md-3 row-cols-xl-4" id="grid-relacionados"></div>
+      </section>
+
+      <!-- Vistos recentemente -->
+      <section class="d-none" id="secao-recentes">
+        <h2 class="font-display fw-bold h3 mb-1">Vistos <span class="text-gradient">recentemente</span></h2>
+        <div class="section-title-bar mt-2 mb-4"></div>
+        <div class="row g-3 g-md-4 row-cols-2 row-cols-md-3 row-cols-xl-4" id="grid-recentes-produto"></div>
       </section>
 
     </div>

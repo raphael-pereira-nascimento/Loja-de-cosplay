@@ -1,16 +1,26 @@
 /* ============================================================
    CosplayHub — Catálogo de dados (produtos e categorias)
-   Imagens: LoremFlickr (banco gratuito) com fallback Picsum
+   Imagens premium: Flickr/Wikimedia (CC, via Openverse)
+   Fallback dinâmico: LoremFlickr + Picsum
    ============================================================ */
 
 const CATEGORIAS = [
-  { id: "anime",     nome: "Anime & Mangá",        icone: "bi-tv",          tag: "cosplay,anime" },
-  { id: "filmes",    nome: "Filmes & Séries",      icone: "bi-film",        tag: "movie,costume" },
-  { id: "games",     nome: "Games",                icone: "bi-controller",  tag: "gaming,costume" },
-  { id: "heroes",    nome: "Super-Herois",         icone: "bi-lightning-charge-fill", tag: "superhero" },
-  { id: "medieval",  nome: "Fantasia & Medieval",  icone: "bi-shield-shaded", tag: "medieval,knight" },
-  { id: "acessorios", nome: "Acessórios & Props",  icone: "bi-gem",         tag: "mask,prop" },
+  { id: "anime",     nome: "Anime & Mangá",       icone: "bi-tv",                    tag: "cosplay,anime" },
+  { id: "filmes",    nome: "Filmes & Séries",     icone: "bi-film",                  tag: "movie,costume" },
+  { id: "games",     nome: "Games",               icone: "bi-controller",            tag: "gaming,costume" },
+  { id: "heroes",    nome: "Super-Herois",        icone: "bi-lightning-charge-fill", tag: "superhero" },
+  { id: "medieval",  nome: "Fantasia & Medieval", icone: "bi-shield-shaded",         tag: "medieval,knight" },
+  { id: "acessorios", nome: "Acessórios & Props", icone: "bi-gem",                   tag: "mask,prop" },
 ];
+
+const IMAGENS_CATEGORIAS = {
+  anime: "https://live.staticflickr.com/5245/5337800379_4958bc0b14_b.jpg",
+  filmes: "https://live.staticflickr.com/5507/14234974055_c78ac44de2_b.jpg",
+  games: "https://live.staticflickr.com/7804/46900319441_ea8132fc39_b.jpg",
+  heroes: "https://live.staticflickr.com/8243/8639237614_cc84d1ab96_b.jpg",
+  medieval: "https://live.staticflickr.com/1368/1070850810_ae6d0f962e_b.jpg",
+  acessorios: "https://live.staticflickr.com/7334/16405813122_7edbb3d50b_b.jpg",
+};
 
 const PRODUTOS = [
   {
@@ -35,6 +45,11 @@ const PRODUTOS = [
       "Acompanha faixa obi",
       "Lavagem à máquina (ciclo delicado)",
     ],
+    imagens: [
+      "https://live.staticflickr.com/5578/14787278657_aa1c1b3c4a_b.jpg",
+      "https://live.staticflickr.com/3847/14970724521_4ed83b2403_b.jpg",
+      "https://live.staticflickr.com/3903/14973477392_a7eb085f15_b.jpg",
+    ],
   },
   {
     id: 2,
@@ -49,7 +64,7 @@ const PRODUTOS = [
     destaque: true,
     tamanhos: ["P", "M", "G", "GG"],
     estoque: 22,
-    tag: "cosplay,red",
+    tag: "cloak,red",
     descricao:
       "O manto icônico da Akatsuki com nuvens vermelhas bordadas em alto relevo. Interior forrado, gola alta estruturada e tecido resistente ao vento — perfeito para composições de personagem ou uso casual geek.",
     especificacoes: [
@@ -104,6 +119,11 @@ const PRODUTOS = [
       "Conjunto com 7 peças",
       "Ajuste por velcro e elásticos internos",
     ],
+    imagens: [
+      "https://live.staticflickr.com/2889/10320226203_ed65e06fac_b.jpg",
+      "https://live.staticflickr.com/3002/2938707468_9bb6ea8fc1_b.jpg",
+      "https://live.staticflickr.com/3229/2767202587_6aa9760f38_b.jpg",
+    ],
   },
   {
     id: 5,
@@ -126,6 +146,11 @@ const PRODUTOS = [
       "Peitoral articulado",
       "Acabamento envelhecido manual",
       "Suporte de exibição incluído",
+    ],
+    imagens: [
+      "https://live.staticflickr.com/3726/9534915722_4148ebd3e0_b.jpg",
+      "https://live.staticflickr.com/5485/9534916080_fb38831884_b.jpg",
+      "https://live.staticflickr.com/3892/14987656768_f23f5f65b7_b.jpg",
     ],
   },
   {
@@ -150,6 +175,11 @@ const PRODUTOS = [
       "Malha simulada leve (não é metal)",
       "4 peças + acessórios",
     ],
+    imagens: [
+      "https://live.staticflickr.com/242/518120820_5e021d4954_b.jpg",
+      "https://live.staticflickr.com/4048/4636715942_4b33540d54_b.jpg",
+      "https://live.staticflickr.com/790/40572500715_014f8f0c1f_b.jpg",
+    ],
   },
   {
     id: 7,
@@ -172,6 +202,11 @@ const PRODUTOS = [
       "Lentes espelhadas removíveis",
       "Acolchoamento interno ajustável",
       "Base acrílica inclusa",
+    ],
+    imagens: [
+      "https://live.staticflickr.com/5507/14234974055_c78ac44de2_b.jpg",
+      "https://live.staticflickr.com/4872/46375962411_4537df5a19_b.jpg",
+      "https://live.staticflickr.com/3789/19764079262_814b0022ef_b.jpg",
     ],
   },
   {
@@ -196,6 +231,11 @@ const PRODUTOS = [
       "Manto em crepe pesado",
       "Kit com 5 peças",
     ],
+    imagens: [
+      "https://upload.wikimedia.org/wikipedia/commons/7/72/Star_Wars_Celebration_IV_-_Jedi_lightsaber_battle_fan_costumes_%284878898184%29.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/1/1b/Star_Wars_Celebration_IV_-_Jedi_lightsaber_duel_%284878881510%29.jpg",
+      "https://live.staticflickr.com/6151/6188957269_ae29ebd5ee_b.jpg",
+    ],
   },
   {
     id: 9,
@@ -210,7 +250,7 @@ const PRODUTOS = [
     destaque: false,
     tamanhos: ["P", "M", "G", "GG"],
     estoque: 16,
-    tag: "halloween,hood",
+    tag: "hood,black",
     descricao:
       "Conjunto de manto longo com capuz estruturado e túnica interna em tons profundos de preto e cinza. Silhueta dramática garantida — do lado sombrio direto para o palco do concurso de cosplay.",
     especificacoes: [
@@ -242,6 +282,11 @@ const PRODUTOS = [
       "Tecido refletivo premium",
       "Lavável removendo o módulo eletrônico",
     ],
+    imagens: [
+      "https://live.staticflickr.com/7804/46900319441_ea8132fc39_b.jpg",
+      "https://live.staticflickr.com/4900/46900316161_caa0759ab7_b.jpg",
+      "https://live.staticflickr.com/7890/46848260602_ca762e57cc_b.jpg",
+    ],
   },
   {
     id: 11,
@@ -264,6 +309,11 @@ const PRODUTOS = [
       "Zíperes metálicos YKK",
       "Forro térmico removível",
       "Patches bordados exclusivos",
+    ],
+    imagens: [
+      "https://live.staticflickr.com/2578/3789662155_da40f768d1_b.jpg",
+      "https://live.staticflickr.com/5473/10062428925_81bac218f6_b.jpg",
+      "https://live.staticflickr.com/54/174473714_6d5f2607d2_b.jpg",
     ],
   },
   {
@@ -288,6 +338,10 @@ const PRODUTOS = [
       "Viseira gradeada ventilada",
       "Acabamento matte envelhecido",
     ],
+    imagens: [
+      "https://live.staticflickr.com/1409/854344979_3ade2ea1df_b.jpg",
+      "https://live.staticflickr.com/1314/855199664_045daa271e_b.jpg",
+    ],
   },
   {
     id: 13,
@@ -310,6 +364,11 @@ const PRODUTOS = [
       "Tiara e braceletes em metal leve",
       "Capa em cetim com fecho magnético",
       "Kit com 6 peças",
+    ],
+    imagens: [
+      "https://live.staticflickr.com/8243/8639237614_cc84d1ab96_b.jpg",
+      "https://live.staticflickr.com/8383/8639237584_8c09a96f8a_b.jpg",
+      "https://live.staticflickr.com/1342/5101201111_e83d6aa1bf_b.jpg",
     ],
   },
   {
@@ -334,6 +393,11 @@ const PRODUTOS = [
       "Cinto utilitário com 4 bolsos",
       "Tecido quatro-way-stretch",
     ],
+    imagens: [
+      "https://live.staticflickr.com/3020/2290607758_99322fa338_b.jpg",
+      "https://live.staticflickr.com/3321/3516008114_bd54764cd1_b.jpg",
+      "https://live.staticflickr.com/8519/8638125491_39a52e41d6_b.jpg",
+    ],
   },
   {
     id: 15,
@@ -350,12 +414,17 @@ const PRODUTOS = [
     estoque: 30,
     tag: "magic,wand",
     descricao:
-      "Varinha esculpida em resina com núcleo iluminado por LED ativado por movimento, caixa-presente de luxo e suporte de exibição. O acessório que faltava para completar seu uniforme mágico.",
+      "Varinha esculpida artesanalmente em madeira com núcleo iluminado por LED ativado por movimento, caixa-presente de luxo e suporte de exibição. Cada peça é única — o acessório que faltava para completar seu uniforme mágico.",
     especificacoes: [
+      "Madeira esculpida à mão",
       "LED sensível a movimento",
-      "Resina com detalhes esculpidos à mão",
       "Caixa-presente + suporte inclusos",
       "Pilhas substituíveis",
+    ],
+    imagens: [
+      "https://live.staticflickr.com/8266/29645615526_935b3283dc_b.jpg",
+      "https://live.staticflickr.com/8846/29435340796_ed310d9310_b.jpg",
+      "https://live.staticflickr.com/8393/29267260801_283ab8f147_b.jpg",
     ],
   },
   {
@@ -380,6 +449,11 @@ const PRODUTOS = [
       "Suporte de parede incluso",
       "Produto decorativo (sem corte)",
     ],
+    imagens: [
+      "https://live.staticflickr.com/3728/9885787776_555ba68ee2_b.jpg",
+      "https://live.staticflickr.com/1538/26501309632_d244dc6678_b.jpg",
+      "https://live.staticflickr.com/1749/27665648557_4810f041c1_b.jpg",
+    ],
   },
   {
     id: 17,
@@ -403,6 +477,11 @@ const PRODUTOS = [
       "Elástico ajustável",
       "Verniz fosco protetivo",
     ],
+    imagens: [
+      "https://live.staticflickr.com/5176/5500387788_24a96c7483_b.jpg",
+      "https://live.staticflickr.com/138/340766382_076ae3c062_b.jpg",
+      "https://live.staticflickr.com/7334/16405813122_7edbb3d50b_b.jpg",
+    ],
   },
   {
     id: 18,
@@ -419,12 +498,379 @@ const PRODUTOS = [
     estoque: 40,
     tag: "necklace,gothic",
     descricao:
-      "Amuleto gótico em liga de zinco com banho envelhecido e pedra obsidiana central. Corrente ajustável de 50 a 70cm com fecho reforçado. Um pacto estiloso com o lado sombrio.",
+      "Amuleto gótico em malha persa completa com banho envelhecido e pingente de pedra vulcânica. Corrente ajustável de 50 a 70cm com fecho reforçado. Um pacto estiloso com o lado sombrio.",
     especificacoes: [
+      "Malha chain maille artesanal",
       "Banho envelhecido antialérgico",
-      "Pedra natural obsidiana",
+      "Pingente de pedra vulcânica",
       "Corrente ajustável 50–70cm",
-      "Acompanha saqueto de veludo",
+    ],
+    imagens: [
+      "https://live.staticflickr.com/3454/3885315586_7fb51dd058_b.jpg",
+      "https://live.staticflickr.com/3435/3885315374_d0c53da34b_b.jpg",
+      "https://live.staticflickr.com/4144/5162422454_14bf811f80_b.jpg",
+    ],
+  },
+
+  /* ---------------- Novidades da coleção ---------------- */
+
+  {
+    id: 19,
+    nome: "Peruca Cosplay Rosa Choque — Fibra Resistente ao Calor",
+    categoria: "acessorios",
+    preco: 149.90,
+    precoAntigo: 179.90,
+    avaliacao: 4.7,
+    numAvaliacoes: 156,
+    vendas: 288,
+    novidade: true,
+    destaque: true,
+    tamanhos: ["Único"],
+    estoque: 26,
+    tag: "wig,pink",
+    descricao:
+      "Peruca de fibra sintética premium resiste a temperaturas de até 180°C, permitindo modelar com chapinha ou babyliss. Rede interna ajustável com pinos de segurança e franja pré-estilizada. Pronta para transformar seu cosplay.",
+    especificacoes: [
+      "Fibra resistente ao calor (até 180°C)",
+      "Rede interna ajustável",
+      "Franja pré-estilizada",
+      "Acompanha peruca-cap para proteger o cabelo",
+    ],
+    imagens: [
+      "https://live.staticflickr.com/6082/6099384805_53b31e5843_b.jpg",
+      "https://live.staticflickr.com/6065/6099385157_daf44764be_b.jpg",
+      "https://live.staticflickr.com/6207/6099385887_fe91a22ca7_b.jpg",
+    ],
+  },
+  {
+    id: 20,
+    nome: "Peruca Cosplay Azul Oceano — Corte Longo Lisa",
+    categoria: "acessorios",
+    preco: 159.90,
+    precoAntigo: null,
+    avaliacao: 4.8,
+    numAvaliacoes: 121,
+    vendas: 203,
+    novidade: true,
+    destaque: false,
+    tamanhos: ["Único"],
+    estoque: 19,
+    tag: "wig,blue",
+    descricao:
+      "Fios longos e sedosos em azul profundo com brilho acetinado. Estrutura ventilada que reduz o suor durante eventos longos e mechas naturais sem embolar. Ideal para personagens de anime e fantasy.",
+    especificacoes: [
+      "Comprimento 80cm",
+      "Estrutura ventilada",
+      "Cor sólida sem desbotar",
+      "Escova de manutenção inclusa",
+    ],
+    imagens: [
+      "https://live.staticflickr.com/5172/5556141394_1504bd3d55_b.jpg",
+      "https://live.staticflickr.com/5270/5555555543_559c07357c_b.jpg",
+      "https://live.staticflickr.com/6196/6099932714_5c39de52c6_b.jpg",
+    ],
+  },
+  {
+    id: 21,
+    nome: "Peruca Loira Dourada — Edição Herói Link",
+    categoria: "acessorios",
+    preco: 139.90,
+    precoAntigo: 169.90,
+    avaliacao: 4.6,
+    numAvaliacoes: 98,
+    vendas: 176,
+    novidade: true,
+    destaque: false,
+    tamanhos: ["Único"],
+    estoque: 21,
+    tag: "wig,blonde",
+    descricao:
+      "Loira dourada vibrante inspirada nos heróis de videogame, com fios resistentes e boné interno confortável. Combina com personagens de RPG, aventura e fantasia medieval.",
+    especificacoes: [
+      "Fibra sintética macia",
+      "Boné interno com regulagem",
+      "Formato versátil para penteados",
+      "Embalagem protetora reutilizável",
+    ],
+    imagens: [
+      "https://live.staticflickr.com/65535/49061940808_2a12095f6e.jpg",
+      "https://live.staticflickr.com/2917/14736485551_f19e215ced_b.jpg",
+      "https://live.staticflickr.com/6083/6099933066_c95d371241_b.jpg",
+    ],
+  },
+  {
+    id: 22,
+    nome: "Chapéu de Bruxa Clássico — Veludo com Fivela",
+    categoria: "medieval",
+    preco: 99.90,
+    precoAntigo: 129.90,
+    avaliacao: 4.5,
+    numAvaliacoes: 87,
+    vendas: 165,
+    novidade: true,
+    destaque: false,
+    tamanhos: ["Único"],
+    estoque: 32,
+    tag: "witch,hat",
+    descricao:
+      "Chapéu de ponta curva em veludo premium com aba estruturada que não amassa na mochila. Fivela metálica envelhecida e faixa contrastante. Clássico das bruxas, perfeito para Halloween e composições mágicas.",
+    especificacoes: [
+      "Veludo premium antirrugas",
+      "Aba estruturada 45cm",
+      "Fivela metálica envelhecida",
+      "Tamanho ajustável interno",
+    ],
+    imagens: [
+      "https://live.staticflickr.com/2398/1849512851_1435bbecea_b.jpg",
+      "https://live.staticflickr.com/49/173826937_846f125b4b_b.jpg",
+      "https://live.staticflickr.com/2358/4507045346_9024220af2_b.jpg",
+    ],
+  },
+  {
+    id: 23,
+    nome: "Espada Longa Medieval — Réplica Decorativa Albion",
+    categoria: "medieval",
+    preco: 899.90,
+    precoAntigo: 1049.90,
+    avaliacao: 4.9,
+    numAvaliacoes: 54,
+    vendas: 67,
+    novidade: true,
+    destaque: true,
+    tamanhos: ["Único"],
+    estoque: 5,
+    tag: "sword,medieval",
+    descricao:
+      "Réplica decorativa de espada longa com lâmina de aço inox fosco, empunhadura encordoada e pomo em liga maciça. Balanceamento visual fiel aos originais do século XV. Acompanha bainha de couro sintético.",
+    especificacoes: [
+      "Lâmina 90cm em aço inox fosco",
+      "Empunhadura encordoada",
+      "Pomo e guarda em liga maciça",
+      "Bainha em couro sintético inclusa",
+    ],
+    imagens: [
+      "https://live.staticflickr.com/2926/14411871202_3fc7500a66_b.jpg",
+      "https://live.staticflickr.com/2893/12185322773_3fceefc5c3_b.jpg",
+      "https://live.staticflickr.com/8219/29325800180_025670766d_b.jpg",
+    ],
+  },
+  {
+    id: 24,
+    nome: "Escudo Heráldico de Cavaleiro — Aço e Brasão",
+    categoria: "medieval",
+    preco: 549.90,
+    precoAntigo: null,
+    avaliacao: 4.7,
+    numAvaliacoes: 41,
+    vendas: 52,
+    novidade: true,
+    destaque: false,
+    tamanhos: ["Único"],
+    estoque: 8,
+    tag: "shield,heraldry",
+    descricao:
+      "Escudo heráldico em madeira compensada com chapa de aço frontal, brasão pintado à mão e alças de braço acolchoadas. Suporte de parede incluso para exibir entre eventos.",
+    especificacoes: [
+      "Madeira compensada 18mm",
+      "Chapa de aço frontal",
+      "Brasão pintado à mão",
+      "Alças acolchoadas + suporte de parede",
+    ],
+    imagens: [
+      "https://live.staticflickr.com/65535/49350370803_2402546290_b.jpg",
+      "https://live.staticflickr.com/7231/7225524432_9857caa537_b.jpg",
+    ],
+  },
+  {
+    id: 25,
+    nome: "Coroa Real Réplica — Metal Envelhecido",
+    categoria: "acessorios",
+    preco: 279.90,
+    precoAntigo: 319.90,
+    avaliacao: 4.8,
+    numAvaliacoes: 63,
+    vendas: 84,
+    novidade: true,
+    destaque: false,
+    tamanhos: ["Único"],
+    estoque: 12,
+    tag: "crown,gold",
+    descricao:
+      "Coroa réplica em metal leve com banho dourado envelhecido e detalhes repuxados à mão. Interior acolchoado em veludo para conforto durante cerimônias temáticas, casamentos nerd e ensaios fotográficos.",
+    especificacoes: [
+      "Metal leve com banho dourado",
+      "Detalhes repuxados à mão",
+      "Interior em veludo acolchoado",
+      "Caixa rígida para transporte",
+    ],
+    imagens: [
+      "https://upload.wikimedia.org/wikipedia/commons/0/0f/Medieval_Crown_of_Bulgaria.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/d/d3/Post-medieval_crown_mount_%28FindID_224923%29.jpg",
+    ],
+  },
+  {
+    id: 26,
+    nome: "Figure Colecionável Chibi Detetive — Nendoroid Style",
+    categoria: "anime",
+    preco: 249.90,
+    precoAntigo: null,
+    avaliacao: 4.9,
+    numAvaliacoes: 148,
+    vendas: 231,
+    novidade: true,
+    destaque: true,
+    tamanhos: ["Único"],
+    estoque: 14,
+    tag: "figure,chibi",
+    descricao:
+      "Figure colecionável estilo chibi com rosto intercambiável, três expressões e acessórios temáticos. Base articulada para poses divertidas e caixa com janela de exposição. Item oficial de vitrine para fãs.",
+    especificacoes: [
+      "PVC pintado à mão",
+      "3 rostos intercambiáveis",
+      "Base articulada inclusa",
+      "Altura aproximada 10cm",
+    ],
+    imagens: [
+      "https://live.staticflickr.com/3354/3343839763_c5149932d2_b.jpg",
+      "https://live.staticflickr.com/4129/5091539666_3d20d2bc72_b.jpg",
+    ],
+  },
+  {
+    id: 27,
+    nome: "Kit 3 Mini-Figuras Mecha — Coleção Clássica",
+    categoria: "anime",
+    preco: 389.90,
+    precoAntigo: 449.90,
+    avaliacao: 4.7,
+    numAvaliacoes: 77,
+    vendas: 112,
+    novidade: true,
+    destaque: false,
+    tamanhos: ["Único"],
+    estoque: 9,
+    tag: "figure,mecha",
+    descricao:
+      "Trilogia de mini-figuras dos mechas mais icônicos dos anos 90, com articulações pontuais, pedestais individuais e cartão de colecionador numerado. Presente certo para quem cresceu assistindo.",
+    especificacoes: [
+      "3 figuras com articulações",
+      "Pedestais individuais",
+      "Cartão de colecionador numerado",
+      "Altura média 12cm cada",
+    ],
+    imagens: [
+      "https://live.staticflickr.com/3288/2669714142_1f731023b0.jpg",
+      "https://live.staticflickr.com/3279/2668893365_d761416c74.jpg",
+      "https://live.staticflickr.com/3224/2669713992_47083d1e26.jpg",
+    ],
+  },
+  {
+    id: 28,
+    nome: "Kimono Tradicional Sakura — Algodão Floral",
+    categoria: "anime",
+    preco: 269.90,
+    precoAntigo: null,
+    avaliacao: 4.8,
+    numAvaliacoes: 92,
+    vendas: 141,
+    novidade: true,
+    destaque: false,
+    tamanhos: ["P", "M", "G", "GG"],
+    estoque: 17,
+    tag: "kimono,floral",
+    descricao:
+      "Kimono tradicional em algodão leve com estampa floral sakura, mangas amplas e obi contrastante. Confortável para dias inteiros de evento, festival japonês ou um chá da tarde temático.",
+    especificacoes: [
+      "Algodão 100% respirável",
+      "Estampa floral exclusiva",
+      "Obi reversível incluso",
+      "Corte unissex",
+    ],
+    imagens: [
+      "https://live.staticflickr.com/3922/14787145030_01a635d80b_b.jpg",
+      "https://live.staticflickr.com/5245/5337800379_4958bc0b14_b.jpg",
+      "https://live.staticflickr.com/5165/5338411488_b85be956a7_b.jpg",
+    ],
+  },
+  {
+    id: 29,
+    nome: "Manto Peregrino com Capuz — Cinza Viajante",
+    categoria: "medieval",
+    preco: 319.90,
+    precoAntigo: 369.90,
+    avaliacao: 4.6,
+    numAvaliacoes: 58,
+    vendas: 73,
+    novidade: true,
+    destaque: false,
+    tamanhos: ["M", "G", "GG"],
+    estoque: 13,
+    tag: "cloak,grey",
+    descricao:
+      "Manto de viagem com capuz profundo em lã fria resistente, ideal para monges, peregrinos e magos errantes. Fecho por broche metálico e bolsos internos discretos para celular e carteira.",
+    especificacoes: [
+      "Lã fria resistente ao vento",
+      "Broche metálico antique",
+      "Capuz profundo estruturado",
+      "2 bolsos internos",
+    ],
+    imagens: [
+      "https://live.staticflickr.com/223/524522552_e3d57b9a7b_b.jpg",
+      "https://live.staticflickr.com/7436/16437275772_1e36445d42_b.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/1/1f/Bardon_Mill%2C_Housesteads_Roman_Fort_Museum%2C_Three_spirits_wearing_hooded_cloaks_-_geograph.org.uk_-_7851709.jpg",
+    ],
+  },
+  {
+    id: 30,
+    nome: "Elmo Clone Trooper Phase II — Edição Colecionador",
+    categoria: "filmes",
+    preco: 599.90,
+    precoAntigo: 679.90,
+    avaliacao: 4.7,
+    numAvaliacoes: 69,
+    vendas: 91,
+    novidade: true,
+    destaque: false,
+    tamanhos: ["Único"],
+    estoque: 7,
+    tag: "helmet,trooper",
+    descricao:
+      "Elmo de clone trooper Phase II com visor azul tintado, pintura em duas camadas e sistema de ajuste interno. Versão colecionador acompanha placa numerada e suporte de mesa em acrílico.",
+    especificacoes: [
+      "Visor azul tintado UV",
+      "Pintura dupla camada",
+      "Placa numerada de colecionador",
+      "Suporte de mesa em acrílico",
+    ],
+    imagens: [
+      "https://live.staticflickr.com/4876/46313769042_4e7ea9d774_b.jpg",
+      "https://live.staticflickr.com/2709/4016842259_fc05b6d2be_b.jpg",
+      "https://live.staticflickr.com/4365/36030591774_7c54d43fcc_b.jpg",
+    ],
+  },
+  {
+    id: 31,
+    nome: "Dupla de Capas Heroínas — Edição Casal",
+    categoria: "heroes",
+    preco: 359.90,
+    precoAntigo: 419.90,
+    avaliacao: 4.8,
+    numAvaliacoes: 47,
+    vendas: 58,
+    novidade: true,
+    destaque: false,
+    tamanhos: ["P", "M", "G"],
+    estoque: 11,
+    tag: "cape,superhero",
+    descricao:
+      "Duas capas em cetim pesado (azul e vermelha) com fecho magnético disfarçado, ideais para duplas e casais que posam juntos. Leves, esvoaçantes e fotografam incrivelmente bem em movimento.",
+    especificacoes: [
+      "2 capas em cetim pesado",
+      "Fecho magnético invisível",
+      "Barra com costura reforçada",
+      "Azul royal + vermelho clássico",
+    ],
+    imagens: [
+      "https://live.staticflickr.com/4056/4571419067_d41615deb2_b.jpg",
     ],
   },
 ];
@@ -438,11 +884,17 @@ function nomeCategoria(id) {
   return cat ? cat.nome : "Outros";
 }
 
-function imagemProduto(produto, indice = 0, largura = 800, altura = 1000) {
-  const lock = produto.id * 10 + indice;
-  return `https://loremflickr.com/${largura}/${altura}/${produto.tag}?lock=${lock}`;
+function galeriaProduto(p) {
+  if (p.imagens && p.imagens.length > 0) return p.imagens.slice(0, 3);
+  return [0, 1, 2].map(
+    (i) => `https://loremflickr.com/800/1000/${p.tag}?lock=${p.id * 10 + i}`
+  );
 }
 
-function fallbackImagem(seed, largura = 800, altura = 1000) {
-  return `https://picsum.photos/seed/cosplayhub-${seed}/${largura}/${altura}`;
+function imagemPrincipal(p) {
+  return galeriaProduto(p)[0];
+}
+
+function fallbackImagem(seed) {
+  return `https://picsum.photos/seed/cosplayhub-${seed}/800/1000`;
 }

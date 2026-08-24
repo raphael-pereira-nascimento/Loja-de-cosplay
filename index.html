@@ -30,7 +30,7 @@
         <div class="carousel-inner">
 
           <div class="carousel-item hero-slide active" data-bs-interval="6000">
-            <img src="https://loremflickr.com/1920/900/cosplay?lock=901"
+            <img src="https://live.staticflickr.com/7101/27481427500_994871275a_b.jpg"
               onerror="this.onerror=null;this.src='https://picsum.photos/seed/ch-hero1/1920/900'"
               alt="Cosplayers em convenção" fetchpriority="high">
             <div class="hero-caption container">
@@ -47,7 +47,7 @@
           </div>
 
           <div class="carousel-item hero-slide" data-bs-interval="6000">
-            <img src="https://loremflickr.com/1920/900/medieval,knight?lock=902"
+            <img src="https://live.staticflickr.com/3726/9534915722_4148ebd3e0_b.jpg"
               onerror="this.onerror=null;this.src='https://picsum.photos/seed/ch-hero2/1920/900'"
               alt="Armaduras medievais" loading="lazy">
             <div class="hero-caption container">
@@ -63,7 +63,7 @@
           </div>
 
           <div class="carousel-item hero-slide" data-bs-interval="6000">
-            <img src="https://loremflickr.com/1920/900/superhero,costume?lock=903"
+            <img src="https://live.staticflickr.com/3321/3516008114_bd54764cd1_b.jpg"
               onerror="this.onerror=null;this.src='https://picsum.photos/seed/ch-hero3/1920/900'"
               alt="Trajes de super-heróis" loading="lazy">
             <div class="hero-caption container">
@@ -133,15 +133,21 @@
     <!-- ============ BANNER PROMO ============ -->
     <section class="container pb-5">
       <div class="promo-banner py-5 px-4 px-md-5">
-        <img src="https://loremflickr.com/1600/500/anime,cosplay?lock=910"
+        <img src="https://live.staticflickr.com/1368/1070850810_ae6d0f962e_b.jpg"
           onerror="this.onerror=null;this.src='https://picsum.photos/seed/ch-promo/1600/500'"
           alt="" loading="lazy">
         <div class="position-relative z-2 row align-items-center g-4">
           <div class="col-lg-7">
             <span class="hero-kicker mb-3"><i class="bi bi-ticket-perforated"></i> Cupom exclusivo</span>
             <h2 class="font-display fw-bold display-6 text-white mt-3">Ganhe <span class="text-gradient">10% OFF</span> na primeira compra!</h2>
-            <p class="text-white-50 mb-4">Válido para todo o catálogo. Aplique o cupom no carrinho antes de finalizar o pedido.</p>
-            <span class="coupon-code text-white">COSPLAY10</span>
+            <p class="text-white-50 mb-3">Válido para todo o catálogo. Aplique o cupom no carrinho antes de finalizar o pedido.</p>
+            <div class="d-flex flex-wrap align-items-center gap-3">
+              <span class="coupon-code text-white">COSPLAY10</span>
+              <span class="countdown-chip text-white" title="O cupom expira à meia-noite e renova no dia seguinte">
+                <i class="bi bi-alarm"></i> Expira em <span id="contador-cupom">--:--:--</span>
+              </span>
+            </div>
+            <p class="text-white-50 small mt-3 mb-0 fst-italic">* Oferta válida para novos cadastros. Renova diariamente à meia-noite.</p>
           </div>
           <div class="col-lg-5 text-lg-end">
             <a href="produtos.html" class="btn btn-light btn-lg px-4 fw-semibold">
@@ -162,6 +168,17 @@
         <a href="produtos.html?sort=novidades" class="btn btn-outline-brand btn-sm px-3">Ver tudo <i class="bi bi-arrow-right ms-1"></i></a>
       </div>
       <div class="row g-3 g-md-4 row-cols-2 row-cols-md-3 row-cols-xl-4" id="grid-novidades"></div>
+    </section>
+
+    <!-- ============ VISTOS RECENTEMENTE ============ -->
+    <section class="pb-5 container d-none" id="secao-recentes-home">
+      <div class="d-flex align-items-end justify-content-between mb-4">
+        <div>
+          <h2 class="font-display section-title h1"><i class="bi bi-clock-history me-2 text-info"></i>Vistos <span class="text-gradient">recentemente</span></h2>
+          <div class="section-title-bar mt-2"></div>
+        </div>
+      </div>
+      <div class="row g-3 g-md-4 row-cols-2 row-cols-md-3 row-cols-xl-4" id="grid-recentes"></div>
     </section>
 
     <!-- ============ DEPOIMENTOS ============ -->

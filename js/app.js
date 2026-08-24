@@ -10,6 +10,8 @@ const KEYS = {
   favs: "ch_favs",
   coupon: "ch_coupon",
   orders: "ch_orders",
+  recentes: "ch_recentes",
+  reviews: "ch_reviews",
 };
 
 const FRETE_GRATIS_LIMITE = 499;
@@ -45,6 +47,16 @@ function hashDemo(texto) {
   let h = 5381;
   for (let i = 0; i < texto.length; i++) h = (h * 33) ^ texto.charCodeAt(i);
   return String(h >>> 0);
+}
+
+function escapeHTML(texto) {
+  return String(texto).replace(/[&<>"']/g, (c) => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;",
+  }[c]));
 }
 
 /* ---------------- Carrinho ---------------- */
@@ -87,7 +99,8 @@ function addToCart(id, qty = 1, tamanho = null) {
   }
   storeSet(KEYS.cart, itens);
   updateBadges();
-  showToast(`"${produto.nome}" adicionado ao carrinho!`, "success");
+  atualizarMiniCarrinho();
+  abrirMiniCarrinho();
 }
 
 function setQtyItem(id, tamanho, qty) {
@@ -98,11 +111,13 @@ function setQtyItem(id, tamanho, qty) {
   item.qty = Math.max(1, Math.min(qty, produto ? produto.estoque : 99));
   storeSet(KEYS.cart, itens);
   updateBadges();
+  atualizarMiniCarrinho();
 }
 
 function removeItemCart(id, tamanho) {
   storeSet(KEYS.cart, cartItems().filter((i) => !(i.id === id && i.tamanho === tamanho)));
   updateBadges();
+  atualizarMiniCarrinho();
 }
 
 function clearCart() {
@@ -220,7 +235,7 @@ function showToast(mensagem, variante = "success") {
         <i class="bi ${icones[variante] || icones.info} fs-5"></i>
         <span>${mensagem}</span>
       </div>
-      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Fechar"></button>
+      <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Fechar"></button>
     </div>`;
   container.appendChild(el);
   const toast = new bootstrap.Toast(el, { delay: 3200 });
@@ -256,14 +271,15 @@ function productCardHTML(p) {
   return `
   <div class="col-6 col-md-4 col-xl-3">
     <div class="card product-card h-100">
-      <div class="product-thumb">
+      <div class="product-thumb img-skeleton">
         ${badge}
         <button class="fav-btn ${favoritado ? "active" : ""}" type="button"
           aria-label="Favoritar" onclick="toggleFavBtn(this, ${p.id})">
           <i class="bi ${favoritado ? "bi-heart-fill" : "bi-heart"}"></i>
         </button>
-        <img src="${imagemProduto(p)}" alt="${p.nome}" loading="lazy"
-          onerror="this.onerror=null;this.src='${fallbackImagem(p.id)}'">
+        <img src="${imagemPrincipal(p)}" alt="${p.nome}" loading="lazy" class="img-fade"
+          onload="this.classList.add('carregada');this.parentElement.classList.add('ok')"
+          onerror="this.onerror=null;this.classList.add('carregada');this.parentElement.classList.add('ok');this.src='${fallbackImagem(p.id)}'">
       </div>
       <div class="card-body d-flex flex-column p-3">
         <small class="text-uppercase fw-semibold" style="font-size:.68rem;color:#a78bfa">${nomeCategoria(p.categoria)}</small>
@@ -312,7 +328,7 @@ function headerTemplate() {
         <i class="bi bi-person-circle fs-5"></i>
         <span class="d-lg-none d-xl-inline">${sessao.nome.split(" ")[0]}</span>
       </a>
-      <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
+      <ul class="dropdown-menu dropdown-menu-end">
         <li><h6 class="dropdown-header">${sessao.email}</h6></li>
         <li><a class="dropdown-item" href="pedidos.html"><i class="bi bi-box-seam me-2"></i>Meus pedidos</a></li>
         <li><a class="dropdown-item" href="favoritos.html"><i class="bi bi-heart me-2"></i>Favoritos</a></li>
@@ -355,17 +371,27 @@ function headerTemplate() {
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="produtos.html" role="button"
               data-bs-toggle="dropdown" aria-expanded="false">Categorias</a>
-            <ul class="dropdown-menu dropdown-menu-dark">${categoriasItens}</ul>
+            <ul class="dropdown-menu">${categoriasItens}</ul>
           </li>
           <li class="nav-item"><a class="nav-link" href="produtos.html?promo=1">% Promoções</a></li>
         </ul>
-        <form class="nav-search d-flex flex-grow-1 my-3 my-lg-0 me-lg-3" role="search" id="header-search">
-          <div class="input-group">
-            <input type="search" class="form-control" placeholder="Buscar cosplay, acessório..." aria-label="Buscar" name="q">
-            <button class="btn btn-outline-brand" type="submit"><i class="bi bi-search"></i></button>
+        <form class="nav-search d-flex flex-grow-1 my-3 my-lg-0 me-lg-3" role="search" id="header-search" autocomplete="off">
+          <div class="search-wrap">
+            <div class="input-group">
+              <input type="search" class="form-control" placeholder="Buscar cosplay, acessório..." aria-label="Buscar" name="q" id="search-input">
+              <button class="btn btn-outline-brand" type="submit"><i class="bi bi-search"></i></button>
+            </div>
+            <div class="search-drop" id="search-drop"></div>
           </div>
         </form>
         <ul class="navbar-nav flex-row align-items-center gap-1 ms-auto mt-2 mt-lg-0">
+          <li class="nav-item">
+            <button type="button" class="icon-btn d-block border-0 bg-transparent"
+              onclick="alternarTema()" aria-label="Alternar tema claro/escuro" title="Alternar tema claro/escuro">
+              <i class="bi bi-moon-stars-fill theme-icon-dark"></i>
+              <i class="bi bi-sun-fill theme-icon-light"></i>
+            </button>
+          </li>
           <li class="nav-item position-relative">
             <a class="icon-btn d-block" href="favoritos.html" aria-label="Favoritos">
               <i class="bi bi-heart"></i>
@@ -434,11 +460,11 @@ function footerTemplate() {
         <div class="col-6 col-md-4 col-lg-3">
           <h6 class="fw-bold mb-3">Institucional</h6>
           <ul class="list-unstyled">
-            <li class="mb-2"><a href="#">Sobre nós</a></li>
-            <li class="mb-2"><a href="#">Política de trocas</a></li>
-            <li class="mb-2"><a href="#">Prazos de envio</a></li>
-            <li class="mb-2"><a href="#">Perguntas frequentes</a></li>
-            <li class="mb-2"><a href="#">Trabalhe conosco</a></li>
+            <li class="mb-2"><a href="sobre.html">Sobre nós</a></li>
+            <li class="mb-2"><a href="trocas.html">Trocas e devoluções</a></li>
+            <li class="mb-2"><a href="trocas.html#prazos">Prazos de envio</a></li>
+            <li class="mb-2"><a href="faq.html">Perguntas frequentes</a></li>
+            <li class="mb-2"><a href="mailto:trabalhe@cosplayhub.com.br">Trabalhe conosco</a></li>
           </ul>
         </div>
         <div class="col-md-8 col-lg-3">
@@ -476,14 +502,7 @@ function updateBadges() {
 }
 
 function wireChromeEvents() {
-  const busca = document.getElementById("header-search");
-  if (busca) {
-    busca.addEventListener("submit", (e) => {
-      e.preventDefault();
-      const q = busca.querySelector("input[name=q]").value.trim();
-      window.location.href = q ? `produtos.html?q=${encodeURIComponent(q)}` : "produtos.html";
-    });
-  }
+  initAutocomplete();
 
   const news = document.getElementById("newsletter-form");
   if (news) {
@@ -493,19 +512,279 @@ function wireChromeEvents() {
         news.classList.add("was-validated");
         return;
       }
-      showToast("Inscrição realizada! Confira seu e-mail. 🎉", "success");
+      showToast("Inscrição realizada! Confira seu e-mail.", "success");
       news.reset();
       news.classList.remove("was-validated");
     });
   }
 }
 
+/* ---------------- Autocomplete da busca ---------------- */
+
+function initAutocomplete() {
+  const form = document.getElementById("header-search");
+  const input = document.getElementById("search-input");
+  const drop = document.getElementById("search-drop");
+  if (!form || !input || !drop) return;
+
+  let timer = null;
+  const fechar = () => drop.classList.remove("show");
+
+  function buscar(termo) {
+    const q = termo.toLowerCase();
+    if (q.length < 2) { fechar(); return; }
+
+    const hits = PRODUTOS.filter(
+      (p) =>
+        p.nome.toLowerCase().includes(q) ||
+        nomeCategoria(p.categoria).toLowerCase().includes(q)
+    ).slice(0, 6);
+
+    if (hits.length === 0) {
+      drop.innerHTML = `
+        <span class="d-block px-3 py-3 text-muted-2 small">
+          <i class="bi bi-emoji-frown me-2"></i>Nada encontrado para "${termo}"
+        </span>`;
+      drop.classList.add("show");
+      return;
+    }
+
+    drop.innerHTML =
+      hits.map((p) => `
+        <a class="search-hit" href="produto.html?id=${p.id}">
+          <img src="${imagemPrincipal(p)}" alt="" loading="lazy"
+            onerror="this.style.display='none'">
+          <span class="flex-grow-1 overflow-hidden">
+            <span class="search-hit-nome d-block fw-semibold">${p.nome}</span>
+            <small class="text-muted-2">${nomeCategoria(p.categoria)}</small>
+          </span>
+          <strong class="text-gradient fs-6 text-nowrap">${brl(p.preco)}</strong>
+        </a>`).join("") +
+      `<a class="search-hit search-all justify-content-center" href="produtos.html?q=${encodeURIComponent(termo)}">
+         Ver todos os resultados <i class="bi bi-arrow-right ms-1"></i>
+       </a>`;
+    drop.classList.add("show");
+  }
+
+  input.addEventListener("input", () => {
+    clearTimeout(timer);
+    timer = setTimeout(() => buscar(input.value.trim()), 180);
+  });
+  input.addEventListener("focus", () => {
+    if (input.value.trim().length >= 2) buscar(input.value.trim());
+  });
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    fechar();
+    const q = input.value.trim();
+    window.location.href = q ? `produtos.html?q=${encodeURIComponent(q)}` : "produtos.html";
+  });
+  document.addEventListener("click", (e) => {
+    if (!form.contains(e.target)) fechar();
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") fechar();
+  });
+}
+
 function renderChrome() {
   ensureSeed();
+  initTema();
   document.getElementById("site-header").innerHTML = headerTemplate();
   document.getElementById("site-footer").innerHTML = footerTemplate();
+  injectMiniCarrinho();
   wireChromeEvents();
   updateBadges();
 }
 
 document.addEventListener("DOMContentLoaded", renderChrome);
+
+/* ============================================================
+   Extras v2 — tema, mini-carrinho, reveal, vistos recentes
+   ============================================================ */
+
+/* ---------------- Tema claro/escuro ---------------- */
+
+const THEME_KEY = "ch_theme";
+
+function initTema() {
+  const salvo = localStorage.getItem(THEME_KEY);
+  if (salvo === "light" || salvo === "dark") {
+    document.documentElement.setAttribute("data-bs-theme", salvo);
+  }
+}
+
+function alternarTema() {
+  const atual = document.documentElement.getAttribute("data-bs-theme") || "dark";
+  const novo = atual === "dark" ? "light" : "dark";
+  document.documentElement.setAttribute("data-bs-theme", novo);
+  localStorage.setItem(THEME_KEY, novo);
+}
+
+initTema();
+
+/* ---------------- Vistos recentemente ---------------- */
+
+function registrarVisto(id) {
+  const lista = storeGet(KEYS.recentes, []).filter((r) => r !== Number(id));
+  lista.unshift(Number(id));
+  storeSet(KEYS.recentes, lista.slice(0, 12));
+}
+
+function produtosRecentes(qtd = 8) {
+  const ids = storeGet(KEYS.recentes, []);
+  const vistos = [];
+  for (const id of ids) {
+    const p = buscarProduto(id);
+    if (p) vistos.push(p);
+    if (vistos.length >= qtd) break;
+  }
+  return vistos;
+}
+
+/* ---------------- Avaliações de usuários ---------------- */
+
+function getUserReviews(idProduto) {
+  return storeGet(KEYS.reviews, {})[Number(idProduto)] || [];
+}
+
+function addUserReview(idProduto, avaliacao) {
+  const todas = storeGet(KEYS.reviews, {});
+  const chave = Number(idProduto);
+  if (!todas[chave]) todas[chave] = [];
+  todas[chave].push(avaliacao);
+  storeSet(KEYS.reviews, todas);
+}
+
+/* ---------------- Mini-carrinho (offcanvas) ---------------- */
+
+function miniCarrinhoTemplate() {
+  return `
+  <div class="offcanvas offcanvas-end bg-surface" tabindex="-1"
+    id="mini-carrinho" aria-labelledby="mini-carrinho-titulo">
+    <div class="offcanvas-header py-3">
+      <h5 class="offcanvas-title font-display fw-bold m-0" id="mini-carrinho-titulo">
+        <i class="bi bi-bag-check me-2"></i>Meu carrinho
+      </h5>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Fechar"></button>
+    </div>
+    <div class="offcanvas-body overflow-auto" id="mini-carrinho-itens"></div>
+    <div class="p-3" id="mini-carrinho-footer"></div>
+  </div>`;
+}
+
+function injectMiniCarrinho() {
+  if (!document.getElementById("mini-carrinho")) {
+    document.body.insertAdjacentHTML("beforeend", miniCarrinhoTemplate());
+    document.getElementById("mini-carrinho").addEventListener("click", (e) => {
+      const btn = e.target.closest("[data-mini-action]");
+      if (!btn) return;
+      const id = Number(btn.dataset.id);
+      const tamanho = btn.dataset.tamanho;
+      const item = cartItems().find((i) => i.id === id && i.tamanho === tamanho);
+      const action = btn.dataset.miniAction;
+      if (action === "inc") setQtyItem(id, tamanho, (item ? item.qty : 1) + 1);
+      else if (action === "dec") setQtyItem(id, tamanho, (item ? item.qty : 2) - 1);
+      else if (action === "rem") removeItemCart(id, tamanho);
+    });
+  }
+  atualizarMiniCarrinho();
+}
+
+function atualizarMiniCarrinho() {
+  const box = document.getElementById("mini-carrinho-itens");
+  const foot = document.getElementById("mini-carrinho-footer");
+  if (!box || !foot) return;
+
+  const itens = cartDetailed();
+  if (itens.length === 0) {
+    box.innerHTML = `
+      <div class="empty-state my-auto w-100 py-5">
+        <div class="icon-ring"><i class="bi bi-bag"></i></div>
+        <h6 class="fw-bold mb-1">Seu carrinho está vazio</h6>
+        <p class="text-muted-2 small mb-3">Que tal um cosplay novinho?</p>
+        <a href="produtos.html" class="btn btn-outline-brand btn-sm">Ver produtos</a>
+      </div>`;
+    foot.innerHTML = "";
+    return;
+  }
+
+  box.innerHTML = itens.map((item) => `
+    <div class="mini-item">
+      <img src="${imagemPrincipal(item)}" alt="${item.nome}" loading="lazy"
+        onerror="this.onerror=null;this.src='${fallbackImagem(item.id)}'">
+      <div style="min-width:0" class="flex-grow-1">
+        <a href="produto.html?id=${item.id}" class="mini-item-nome fw-semibold d-block">${item.nome}</a>
+        <small class="text-muted-2">Tam.: ${item.tamanho} • ${brl(item.preco)}</small>
+        <div class="d-flex align-items-center justify-content-between mt-2 gap-2">
+          <div class="d-flex align-items-center gap-2">
+            <button type="button" class="mini-qtd-btn" data-mini-action="dec"
+              data-id="${item.id}" data-tamanho="${item.tamanho}" aria-label="Diminuir quantidade"><i class="bi bi-dash-lg"></i></button>
+            <span class="small fw-semibold">${item.qty}</span>
+            <button type="button" class="mini-qtd-btn" data-mini-action="inc"
+              data-id="${item.id}" data-tamanho="${item.tamanho}" aria-label="Aumentar quantidade"><i class="bi bi-plus-lg"></i></button>
+          </div>
+          <div class="d-flex align-items-center gap-2">
+            <strong class="small">${brl(item.linhaTotal)}</strong>
+            <button type="button" class="btn btn-sm text-danger p-1 lh-1"
+              data-mini-action="rem" data-id="${item.id}" data-tamanho="${item.tamanho}" aria-label="Remover item"><i class="bi bi-trash3"></i></button>
+          </div>
+        </div>
+      </div>
+    </div>`).join("");
+
+  const subtotal = cartSubtotal();
+  const faltaFrete = FRETE_GRATIS_LIMITE - subtotal;
+  foot.innerHTML = `
+    ${
+      faltaFrete > 0
+        ? `<p class="small text-muted-2 mb-2"><i class="bi bi-truck me-1"></i>Faltam <strong>${brl(faltaFrete)}</strong> para frete grátis!</p>`
+        : `<p class="small text-success mb-2"><i class="bi bi-truck me-1"></i><strong>Você ganhou frete grátis!</strong></p>`
+    }
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <span class="text-muted-2">Subtotal (${cartCount()} ${cartCount() === 1 ? "item" : "itens"})</span>
+      <strong class="fs-5">${brl(subtotal)}</strong>
+    </div>
+    <div class="d-grid gap-2">
+      <a href="checkout.html" class="btn btn-gradient"><i class="bi bi-credit-card me-1"></i>Finalizar compra</a>
+      <a href="carrinho.html" class="btn btn-outline-brand btn-sm">Ver carrinho completo</a>
+    </div>`;
+}
+
+function abrirMiniCarrinho() {
+  const el = document.getElementById("mini-carrinho");
+  if (!el || typeof bootstrap === "undefined") return;
+  bootstrap.Offcanvas.getOrCreateInstance(el).show();
+}
+
+/* ---------------- Reveal on-scroll ---------------- */
+
+const observadorReveal =
+  "IntersectionObserver" in window &&
+  !window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ? new IntersectionObserver(
+        (entradas) => {
+          entradas.forEach((entrada, i) => {
+            if (!entrada.isIntersecting) return;
+            setTimeout(() => entrada.target.classList.add("reveal-in"), i * 55);
+            observadorReveal.unobserve(entrada.target);
+          });
+        },
+        { threshold: 0.06 }
+      )
+    : null;
+
+const SELETORES_REVEAL =
+  ".section-title-bar, .category-card, .product-card, .testimonial-card, .promo-banner, .filter-card";
+
+function aplicarReveals(seletor) {
+  if (!observadorReveal) return;
+  document.querySelectorAll(seletor || SELETORES_REVEAL).forEach((el) => {
+    if (el.dataset.revealDone) return;
+    el.dataset.revealDone = "1";
+    el.classList.add("reveal");
+    observadorReveal.observe(el);
+  });
+}
+
+setTimeout(() => aplicarReveals(), 300);

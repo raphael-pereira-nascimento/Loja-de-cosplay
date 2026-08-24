@@ -2,10 +2,13 @@
    CosplayHub — Catálogo (filtros, busca e ordenação)
    ============================================================ */
 
+const TAMANHOS_FILTRO = ["P", "M", "G", "GG", "Único"];
+
 const filtros = {
   q: "",
   cat: "",
   preco: "todos",
+  tamanhos: [],
   promo: false,
   sort: "relevancia",
 };
@@ -26,6 +29,19 @@ function montarListaCategorias() {
       <label class="form-check-label small" for="cat-${c.id}">${c.nome}</label>
     </div>`
   ).join("");
+
+  const boxTamanhos = document.getElementById("lista-tamanhos");
+  if (boxTamanhos) {
+    boxTamanhos.innerHTML = TAMANHOS_FILTRO.map(
+      (t) => `
+      <div class="col-6">
+        <div class="form-check mb-1">
+          <input class="form-check-input filtro-tam" type="checkbox" id="tam-${encodeURIComponent(t)}" value="${t}">
+          <label class="form-check-label small" for="tam-${encodeURIComponent(t)}">${t}</label>
+        </div>
+      </div>`
+    ).join("");
+  }
 }
 
 function lerParametrosURL() {
@@ -78,6 +94,14 @@ function wireEventos() {
     })
   );
 
+  document.querySelectorAll(".filtro-tam").forEach((check) =>
+    check.addEventListener("change", () => {
+      const marcados = [...document.querySelectorAll(".filtro-tam:checked")];
+      filtros.tamanhos = marcados.map((c) => c.value);
+      aplicarFiltros();
+    })
+  );
+
   document.getElementById("filtro-promo").addEventListener("change", (e) => {
     filtros.promo = e.target.checked;
     aplicarFiltros();
@@ -93,6 +117,7 @@ function limparFiltros() {
   filtros.q = "";
   filtros.cat = "";
   filtros.preco = "todos";
+  filtros.tamanhos = [];
   filtros.promo = false;
   filtros.sort = "relevancia";
 
@@ -100,6 +125,7 @@ function limparFiltros() {
   busca.value = "";
   document.getElementById("cat-todas").checked = true;
   document.getElementById("preco-todos").checked = true;
+  document.querySelectorAll(".filtro-tam").forEach((c) => (c.checked = false));
   document.getElementById("filtro-promo").checked = false;
   document.getElementById("ordenar").value = "relevancia";
 
@@ -113,6 +139,13 @@ function produtoPassaNosFiltros(p) {
     if (!alvo.includes(filtros.q)) return false;
   }
   if (filtros.cat && p.categoria !== filtros.cat) return false;
+
+  if (
+    filtros.tamanhos.length > 0 &&
+    !p.tamanhos.some((t) => filtros.tamanhos.includes(t))
+  ) {
+    return false;
+  }
 
   switch (filtros.preco) {
     case "ate200": if (p.preco > 200) return false; break;
@@ -153,6 +186,12 @@ function renderizarChips() {
     chips.push({ label: rotulos[filtros.preco], limpar: "preco" });
   }
   if (filtros.promo) chips.push({ label: "Em promoção", limpar: "promo" });
+  if (filtros.tamanhos.length > 0) {
+    chips.push({
+      label: `<i class="bi bi-rulers me-1"></i>Tam.: ${filtros.tamanhos.join(", ")}`,
+      limpar: "tamanhos",
+    });
+  }
 
   container.innerHTML = chips
     .map(
@@ -178,6 +217,9 @@ function renderizarChips() {
       } else if (qual === "promo") {
         filtros.promo = false;
         document.getElementById("filtro-promo").checked = false;
+      } else if (qual === "tamanhos") {
+        filtros.tamanhos = [];
+        document.querySelectorAll(".filtro-tam").forEach((c) => (c.checked = false));
       }
       aplicarFiltros();
     })
@@ -195,4 +237,5 @@ function aplicarFiltros() {
     `<strong>${resultados.length}</strong> ${resultados.length === 1 ? "produto encontrado" : "produtos encontrados"}`;
 
   renderizarChips();
+  aplicarReveals();
 }

@@ -297,9 +297,9 @@ function renderMiniItens() {
     .map(
       (p) => `
     <div class="d-flex gap-3 align-items-center">
-      <img src="${imagemProduto(p, 0, 120, 150)}" alt="${p.nome}" width="52" height="64"
+      <img src="${imagemPrincipal(p)}" alt="${p.nome}" width="52" height="64"
         class="rounded-3 border-subtle" style="object-fit:cover"
-        onerror="this.onerror=null;this.src='${fallbackImagem(p.id + "-ck", 104, 128)}'">
+        onerror="this.onerror=null;this.src='${fallbackImagem(p.id + "-ck")}'">
       <div class="flex-grow-1 small">
         <strong class="d-block text-truncate">${p.nome}</strong>
         <span class="text-muted-2">${p.qty}x · Tam: ${p.tamanho}</span>

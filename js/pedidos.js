@@ -24,13 +24,66 @@ function renderPedidos() {
     pedidos.length === 1 ? "1 pedido realizado." : `${pedidos.length} pedidos realizados.`;
 
   lista.innerHTML = pedidos.map(pedidoCardHTML).join("");
+  aplicarReveals();
 }
 
 function statusPedido(dataIso) {
   const dias = (Date.now() - new Date(dataIso)) / 86400000;
-  if (dias < 2) return { label: "Pagamento aprovado", cor: "success", icone: "bi-check-circle-fill" };
-  if (dias < 5) return { label: "Em separação", cor: "warning", icone: "bi-boxes" };
-  return { label: "Em trânsito", cor: "info", icone: "bi-truck" };
+  if (dias >= 7) return { label: "Entregue", cor: "success", icone: "bi-house-check-fill" };
+  if (dias >= 5) return { label: "Em trânsito", cor: "info", icone: "bi-truck" };
+  if (dias >= 3) return { label: "Enviado", cor: "primary", icone: "bi-send-fill" };
+  if (dias >= 2) return { label: "Em separação", cor: "warning", icone: "bi-boxes" };
+  return { label: "Pagamento aprovado", cor: "success", icone: "bi-check-circle-fill" };
+}
+
+/* ---------------- Rastreamento simulado ---------------- */
+
+const ETAPAS_RASTREIO = [
+  { label: "Pedido confirmado", icone: "bi-receipt-cutoff" },
+  { label: "Pagamento aprovado", icone: "bi-check-circle" },
+  { label: "Em separação no centro de distribuição", icone: "bi-boxes" },
+  { label: "Enviado à transportadora", icone: "bi-send" },
+  { label: "Em trânsito para sua cidade", icone: "bi-truck" },
+  { label: "Entregue", icone: "bi-house-check" },
+];
+
+function timelineHTML(p) {
+  const dias = (Date.now() - new Date(p.data)) / 86400000;
+
+  let atualMarcada = false;
+  const itens = ETAPAS_RASTREIO.map((etapa, i) => {
+    const feito = [true, dias >= 0.02, dias >= 2, dias >= 3, dias >= 5, dias >= 7][i];
+    let estado;
+    if (feito) {
+      estado = "done";
+    } else if (!atualMarcada) {
+      estado = "atual";
+      atualMarcada = true;
+    } else {
+      estado = "pendente";
+    }
+
+    const nota =
+      estado === "done"
+        ? "Concluído"
+        : estado === "atual"
+          ? "Etapa em andamento…"
+          : "Aguardando";
+
+    return `
+    <li class="${estado}">
+      <span class="timeline-dot">${feito ? '<i class="bi bi-check-lg"></i>' : ""}</span>
+      <strong class="small d-block"><i class="bi ${etapa.icone} me-1"></i>${etapa.label}</strong>
+      <small class="text-muted-2">${nota}</small>
+    </li>`;
+  }).join("");
+
+  const codigo = `CH${String(Math.abs(hashDemo(p.numero)).toString().slice(0, 9)).padStart(9, "7")}`;
+  return `
+  <ul class="timeline">${itens}</ul>
+  <div class="small text-muted-2 border-top border-subtle pt-2 mt-1">
+    <i class="bi bi-upc-scan me-1"></i>Código de rastreio simulado: <strong class="font-display">${codigo}</strong>
+  </div>`;
 }
 
 function pedidoCardHTML(p) {
@@ -75,10 +128,10 @@ function pedidoCardHTML(p) {
             <div class="d-flex gap-3 align-items-center">
               ${
                 produto
-                  ? `<a href="produto.html?id=${item.id}"><img src="${imagemProduto(produto, 0, 120, 150)}"
+                  ? `<a href="produto.html?id=${item.id}"><img src="${imagemPrincipal(produto)}"
                       alt="${item.nome}" width="52" height="64" class="rounded-3 border-subtle"
                       style="object-fit:cover" loading="lazy"
-                      onerror="this.onerror=null;this.src='${fallbackImagem(item.id + "-pd", 104, 128)}'"></a>`
+                      onerror="this.onerror=null;this.src='${fallbackImagem(item.id + "-pd")}'"></a>`
                   : ""
               }
               <div class="small flex-grow-1">
@@ -96,6 +149,17 @@ function pedidoCardHTML(p) {
         Entrega para: ${p.endereco.rua}, ${p.endereco.numero}${p.endereco.complemento ? " — " + p.endereco.complemento : ""}
         · ${p.endereco.bairro}, ${p.endereco.cidade}/${p.endereco.uf}
         · Prazo: ${p.entrega.prazo}
+      </div>
+
+      <button class="btn btn-outline-brand btn-sm tracking-toggle mt-3" type="button"
+        data-bs-toggle="collapse" data-bs-target="#rastreio-${p.numero}" aria-expanded="false"
+        aria-controls="rastreio-${p.numero}">
+        <i class="bi bi-signpost-split me-1"></i>Rastrear pedido
+      </button>
+      <div class="collapse mt-3" id="rastreio-${p.numero}">
+        <div class="bg-surface-2 border-subtle rounded-3 p-3 ps-4 pt-4">
+          ${timelineHTML(p)}
+        </div>
       </div>
     </div>
   </article>`;
