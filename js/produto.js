@@ -16,6 +16,19 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   document.title = `${produtoAtual.nome} | CosplayHub`;
+  const metaDesc = document.querySelector('meta[name="description"]');
+  if (metaDesc) metaDesc.content = produtoAtual.descricao.slice(0, 160);
+  const jsonld = document.getElementById("jsonld-product");
+  if (jsonld) {
+    const j = JSON.parse(jsonld.textContent);
+    j.name = produtoAtual.nome;
+    j.description = produtoAtual.descricao;
+    j.image = imagemPrincipal(produtoAtual);
+    j.offers.price = String(produtoAtual.preco);
+    j.offers.availability = produtoAtual.estoque > 0
+      ? "https://schema.org/InStock" : "https://schema.org/OutOfStock";
+    jsonld.textContent = JSON.stringify(j, null, 2);
+  }
   registrarVisto(produtoAtual.id);
   renderizarGaleria();
   renderizarInformacoes();
@@ -70,6 +83,14 @@ function renderizarGaleria() {
       principal.src = btn.dataset.src;
     })
   );
+
+  const wrapPrincipal = document.getElementById("principal-wrap");
+  if (wrapPrincipal) {
+    wrapPrincipal.addEventListener("click", () => abrirLightbox(0));
+    wrapPrincipal.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); abrirLightbox(0); }
+    });
+  }
 }
 
 /* ---------------- Informações ---------------- */
@@ -180,7 +201,7 @@ function wireBotoesAcao() {
   });
 
   document.getElementById("btn-comprar-agora").addEventListener("click", () => {
-    addToCart(produtoAtual.id, Number(document.getElementById("input-qty").value), tamanhoSelecionado);
+    addToCart(produtoAtual.id, Number(document.getElementById("input-qty").value), tamanhoSelecionado, false);
     window.location.href = "checkout.html";
   });
 
@@ -363,4 +384,82 @@ function renderizarRelacionados() {
   const relacionados = [...mesmaCategoria, ...outros].slice(0, 4);
   document.getElementById("grid-relacionados").innerHTML =
     relacionados.map(productCardHTML).join("");
+}
+
+/* ---------------- Guia de tamanhos ---------------- */
+
+function abrirGuiaTamanhos() {
+  const el = document.getElementById("modal-guia-tamanhos");
+  if (el) bootstrap.Modal.getOrCreateInstance(el).show();
+}
+
+/* ---------------- Lightbox ---------------- */
+
+let lightboxIndex = 0;
+let lightboxTrigger = null;
+
+function abrirLightbox(index) {
+  const urls = galeriaProduto(produtoAtual);
+  lightboxIndex = index;
+  lightboxTrigger = document.activeElement;
+
+  let lb = document.getElementById("ch-lightbox");
+  if (!lb) {
+    document.body.insertAdjacentHTML("beforeend", `
+      <div id="ch-lightbox" class="ch-lightbox" role="dialog" aria-modal="true" aria-label="Galeria de imagens">
+        <button type="button" class="ch-lightbox-btn ch-lightbox-close" aria-label="Fechar"><i class="bi bi-x-lg"></i></button>
+        <button type="button" class="ch-lightbox-btn ch-lightbox-prev" aria-label="Anterior"><i class="bi bi-chevron-left"></i></button>
+        <button type="button" class="ch-lightbox-btn ch-lightbox-next" aria-label="Próximo"><i class="bi bi-chevron-right"></i></button>
+        <img src="" alt="">
+        <span class="ch-lightbox-counter"></span>
+      </div>`);
+    lb = document.getElementById("ch-lightbox");
+
+    lb.querySelector(".ch-lightbox-close").addEventListener("click", fecharLightbox);
+    lb.querySelector(".ch-lightbox-prev").addEventListener("click", () => navegarLightbox(-1));
+    lb.querySelector(".ch-lightbox-next").addEventListener("click", () => navegarLightbox(1));
+    lb.addEventListener("click", (e) => { if (e.target === lb) fecharLightbox(); });
+    document.addEventListener("keydown", (e) => {
+      if (!lb.classList.contains("aberto")) return;
+      if (e.key === "Escape") { fecharLightbox(); return; }
+      if (e.key === "ArrowLeft") { navegarLightbox(-1); return; }
+      if (e.key === "ArrowRight") { navegarLightbox(1); return; }
+      if (e.key === "Tab") {
+        const focusable = lb.querySelectorAll("button");
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+      }
+    });
+  }
+
+  atualizarLightboxImagem(urls);
+  lb.classList.add("aberto");
+  document.body.style.overflow = "hidden";
+  lb.querySelector(".ch-lightbox-close").focus();
+}
+
+function navegarLightbox(direcao) {
+  const urls = galeriaProduto(produtoAtual);
+  lightboxIndex = (lightboxIndex + direcao + urls.length) % urls.length;
+  atualizarLightboxImagem(urls);
+}
+
+function atualizarLightboxImagem(urls) {
+  const lb = document.getElementById("ch-lightbox");
+  const img = lb.querySelector("img");
+  const counter = lb.querySelector(".ch-lightbox-counter");
+  img.src = urls[lightboxIndex];
+  img.alt = produtoAtual.nome;
+  counter.textContent = `${lightboxIndex + 1} / ${urls.length}`;
+}
+
+function fecharLightbox() {
+  const lb = document.getElementById("ch-lightbox");
+  if (lb) {
+    lb.classList.remove("aberto");
+    document.body.style.overflow = "";
+    if (lightboxTrigger) { lightboxTrigger.focus(); lightboxTrigger = null; }
+  }
 }

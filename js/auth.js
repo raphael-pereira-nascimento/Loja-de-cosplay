@@ -37,6 +37,7 @@ function wireLogin() {
 
     if (loginUser(email, valorSenha)) {
       showToast(`Bem-vindo de volta! 🎭`, "success");
+      setTimeout(verificarCupomAniversario, 700);
       setTimeout(() => {
         window.location.href = param("redirect") || "index.html";
       }, 600);

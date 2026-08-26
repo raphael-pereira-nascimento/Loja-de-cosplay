@@ -93,10 +93,13 @@ function irParaEtapa(destino) {
   if (destino < 4) {
     document.querySelectorAll("#steps-indicador .step").forEach((stepEl) => {
       const numero = Number(stepEl.dataset.step);
+      const circle = stepEl.querySelector(".step-circle");
+      const origIcon = circle.dataset.icon;
       stepEl.classList.toggle("current", numero === destino);
       stepEl.classList.toggle("done", numero < destino);
-      stepEl.querySelector(".step-circle").innerHTML =
-        numero < destino ? '<i class="bi bi-check-lg"></i>' : stepEl.querySelector(".step-circle").innerHTML;
+      circle.innerHTML = numero < destino
+        ? '<i class="bi bi-check-lg"></i>'
+        : `<i class="bi ${origIcon}"></i>`;
     });
 
     if (destino === 3) {
@@ -437,6 +440,11 @@ function confirmarPedido() {
       total: v.total,
     },
   };
+
+  v.itens.forEach((item) => {
+    const prod = buscarProduto(item.id);
+    if (prod) prod.estoque = Math.max(0, prod.estoque - item.qty);
+  });
 
   const pedidos = storeGet(KEYS.orders, []);
   pedidos.push(pedido);

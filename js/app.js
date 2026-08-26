@@ -1,4 +1,4 @@
-/* ============================================================
+﻿/* ============================================================
    CosplayHub — Núcleo compartilhado
    Armazenamento, carrinho, favoritos, sessão, header e footer
    ============================================================ */
@@ -12,12 +12,15 @@ const KEYS = {
   orders: "ch_orders",
   recentes: "ch_recentes",
   reviews: "ch_reviews",
+  newsletter: "ch_newsletter",
+  compare: "ch_compare",
 };
 
 const FRETE_GRATIS_LIMITE = 499;
 const CUPONS = {
   COSPLAY10: { tipo: "percentual", valor: 10 },
   FRETEGRATIS: { tipo: "frete", valor: 0 },
+  BIRTHDAY15: { tipo: "percentual", valor: 15 },
 };
 
 /* ---------------- Utilidades ---------------- */
@@ -86,7 +89,7 @@ function cartSubtotal() {
   }, 0);
 }
 
-function addToCart(id, qty = 1, tamanho = null) {
+function addToCart(id, qty = 1, tamanho = null, abrirDrawer = true) {
   const produto = buscarProduto(id);
   if (!produto) return;
   const tamanhoFinal = tamanho || produto.tamanhos[0];
@@ -100,7 +103,7 @@ function addToCart(id, qty = 1, tamanho = null) {
   storeSet(KEYS.cart, itens);
   updateBadges();
   atualizarMiniCarrinho();
-  abrirMiniCarrinho();
+  if (abrirDrawer) abrirMiniCarrinho();
 }
 
 function setQtyItem(id, tamanho, qty) {
@@ -123,6 +126,7 @@ function removeItemCart(id, tamanho) {
 function clearCart() {
   storeSet(KEYS.cart, []);
   updateBadges();
+  atualizarMiniCarrinho();
 }
 
 /* ---------------- Favoritos ---------------- */
@@ -217,7 +221,7 @@ function getOrders() {
 
 /* ---------------- Toasts ---------------- */
 
-function showToast(mensagem, variante = "success") {
+function showToast(mensagem, variante = "success", opcoes = {}) {
   const container = document.getElementById("toast-root");
   if (!container) return;
   const icones = {
@@ -226,6 +230,9 @@ function showToast(mensagem, variante = "success") {
     warning: "bi-exclamation-triangle-fill text-warning",
     info: "bi-info-circle-fill text-info",
   };
+  const btnHTML = opcoes.btn
+    ? `<a href="${escapeHTML(opcoes.btn.href)}" class="toast-action-btn" data-bs-dismiss="toast">${escapeHTML(opcoes.btn.texto)}</a>`
+    : "";
   const el = document.createElement("div");
   el.className = "toast align-items-center border-subtle bg-surface-2";
   el.setAttribute("role", "alert");
@@ -234,11 +241,12 @@ function showToast(mensagem, variante = "success") {
       <div class="toast-body d-flex align-items-center gap-2">
         <i class="bi ${icones[variante] || icones.info} fs-5"></i>
         <span>${mensagem}</span>
+        ${btnHTML}
       </div>
       <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Fechar"></button>
     </div>`;
   container.appendChild(el);
-  const toast = new bootstrap.Toast(el, { delay: 3200 });
+  const toast = new bootstrap.Toast(el, { delay: 4000 });
   el.addEventListener("hidden.bs.toast", () => el.remove());
   toast.show();
 }
@@ -277,13 +285,20 @@ function productCardHTML(p) {
           aria-label="Favoritar" onclick="toggleFavBtn(this, ${p.id})">
           <i class="bi ${favoritado ? "bi-heart-fill" : "bi-heart"}"></i>
         </button>
-        <img src="${imagemPrincipal(p)}" alt="${p.nome}" loading="lazy" class="img-fade"
-          onload="this.classList.add('carregada');this.parentElement.classList.add('ok')"
-          onerror="this.onerror=null;this.classList.add('carregada');this.parentElement.classList.add('ok');this.src='${fallbackImagem(p.id)}'">
+        <div class="compare-check">
+          <input type="checkbox" id="cmp-${p.id}" ${getCompare().includes(p.id) ? "checked" : ""}
+            onchange="toggleCompare(${p.id})">
+          <label for="cmp-${p.id}"><i class="bi bi-arrow-left-right"></i></label>
+        </div>
+        <a href="informacoes-produto.html?id=${p.id}" class="d-block text-decoration-none">
+          <img src="${imagemThumbnail(p)}" alt="${p.nome}" loading="lazy" class="img-fade"
+            onload="this.classList.add('carregada');this.parentElement.parentElement.classList.add('ok')"
+            onerror="this.onerror=null;this.classList.add('carregada');this.parentElement.parentElement.classList.add('ok');this.src='${fallbackImagem(p.id)}'">
+        </a>
       </div>
       <div class="card-body d-flex flex-column p-3">
         <small class="text-uppercase fw-semibold" style="font-size:.68rem;color:#a78bfa">${nomeCategoria(p.categoria)}</small>
-        <h6 class="product-name mt-1 mb-1 fs-6"><a href="produto.html?id=${p.id}">${p.nome}</a></h6>
+        <h6 class="product-name mt-1 mb-1 fs-6"><a href="informacoes-produto.html?id=${p.id}">${p.nome}</a></h6>
         <div class="d-flex align-items-center gap-1 mb-2">
           ${estrelasHTML(p.avaliacao)}
           <small class="text-muted-2 ms-1">(${p.numAvaliacoes})</small>
@@ -480,7 +495,7 @@ function footerTemplate() {
 
       <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-2 pt-3 border-top border-subtle small text-muted-2">
         <span>© 2026 CosplayHub — Projeto educacional. Todos os direitos reservados.</span>
-        <span>Desenvolvido com <i class="bi bi-bootstrap-fill text-primary"></i> Bootstrap 5 + HTML5</span>
+        <span>Desenvolvido com <i class="bi bi-bootstrap-fill text-primary"></i> Bootstrap 5 + HTML5 · <a href="creditos.html" class="text-decoration-none" style="color:var(--ch-brand-soft)">Créditos</a></span>
       </div>
     </div>
   </footer>`;
@@ -511,6 +526,14 @@ function wireChromeEvents() {
       if (!news.checkValidity()) {
         news.classList.add("was-validated");
         return;
+      }
+      const emailInscrito = news.querySelector("input[type=email]").value.trim().toLowerCase();
+      if (emailInscrito) {
+        const lista = storeGet(KEYS.newsletter, []);
+        if (!lista.includes(emailInscrito)) {
+          lista.push(emailInscrito);
+          storeSet(KEYS.newsletter, lista);
+        }
       }
       showToast("Inscrição realizada! Confira seu e-mail.", "success");
       news.reset();
@@ -551,7 +574,7 @@ function initAutocomplete() {
 
     drop.innerHTML =
       hits.map((p) => `
-        <a class="search-hit" href="produto.html?id=${p.id}">
+        <a class="search-hit" href="informacoes-produto.html?id=${p.id}">
           <img src="${imagemPrincipal(p)}" alt="" loading="lazy"
             onerror="this.style.display='none'">
           <span class="flex-grow-1 overflow-hidden">
@@ -590,11 +613,26 @@ function initAutocomplete() {
 function renderChrome() {
   ensureSeed();
   initTema();
+  if (!document.getElementById("skip-link")) {
+    document.body.insertAdjacentHTML("afterbegin",
+      '<a href="#main-content" class="visually-hidden-focusable position-absolute top-0 start-0 m-2 px-3 py-2 rounded-3 z-3" style="background:var(--ch-primary);color:#fff;font-weight:600">Pular para o conteúdo</a>');
+  }
   document.getElementById("site-header").innerHTML = headerTemplate();
   document.getElementById("site-footer").innerHTML = footerTemplate();
   injectMiniCarrinho();
+  injectCompareBar();
   wireChromeEvents();
   updateBadges();
+  verificarCupomAniversario();
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("sw.js").catch(() => {});
+  }
+  document.body.classList.add("page-transition");
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      document.body.classList.add("visible");
+    });
+  });
 }
 
 document.addEventListener("DOMContentLoaded", renderChrome);
@@ -714,7 +752,7 @@ function atualizarMiniCarrinho() {
       <img src="${imagemPrincipal(item)}" alt="${item.nome}" loading="lazy"
         onerror="this.onerror=null;this.src='${fallbackImagem(item.id)}'">
       <div style="min-width:0" class="flex-grow-1">
-        <a href="produto.html?id=${item.id}" class="mini-item-nome fw-semibold d-block">${item.nome}</a>
+        <a href="informacoes-produto.html?id=${item.id}" class="mini-item-nome fw-semibold d-block">${item.nome}</a>
         <small class="text-muted-2">Tam.: ${item.tamanho} • ${brl(item.preco)}</small>
         <div class="d-flex align-items-center justify-content-between mt-2 gap-2">
           <div class="d-flex align-items-center gap-2">
@@ -788,3 +826,78 @@ function aplicarReveals(seletor) {
 }
 
 setTimeout(() => aplicarReveals(), 300);
+
+/* ---------------- Comparação de produtos ---------------- */
+
+function getCompare() {
+  return storeGet(KEYS.compare, []);
+}
+
+function toggleCompare(id) {
+  id = Number(id);
+  let lista = getCompare();
+  if (lista.includes(id)) {
+    lista = lista.filter((c) => c !== id);
+  } else if (lista.length < 2) {
+    lista.push(id);
+  } else {
+    showToast("Você pode comparar no máximo 2 produtos.", "warning");
+    return;
+  }
+  storeSet(KEYS.compare, lista);
+  atualizarBarraComparacao();
+}
+
+function injectCompareBar() {
+  if (document.getElementById("compare-bar")) return;
+  document.body.insertAdjacentHTML("beforeend", `
+    <div class="compare-bar" id="compare-bar">
+      <div class="container d-flex align-items-center justify-content-between">
+        <span class="small" id="compare-info"><i class="bi bi-arrow-left-right me-1"></i>Comparar: <strong>0</strong>/2 selecionados</span>
+        <a href="#" class="btn btn-gradient btn-sm disabled" id="compare-btn" aria-disabled="true">
+          <i class="bi bi-table me-1"></i>Comparar agora
+        </a>
+      </div>
+    </div>`);
+}
+
+function atualizarBarraComparacao() {
+  const barra = document.getElementById("compare-bar");
+  if (!barra) return;
+  const lista = getCompare();
+  const info = document.getElementById("compare-info");
+  const btn = document.getElementById("compare-btn");
+  barra.classList.toggle("visivel", lista.length > 0);
+  if (info) info.innerHTML = `<i class="bi bi-arrow-left-right me-1"></i>Comparar: <strong>${lista.length}</strong>/2 selecionados`;
+  if (btn) {
+    if (lista.length === 2) {
+      btn.href = `comparar.html?id=${lista[0]}&id=${lista[1]}`;
+      btn.classList.remove("disabled");
+      btn.setAttribute("aria-disabled", "false");
+    } else {
+      btn.href = "#";
+      btn.classList.add("disabled");
+      btn.setAttribute("aria-disabled", "true");
+    }
+  }
+}
+
+/* ---------------- Cupom de aniversário ---------------- */
+
+function verificarCupomAniversario() {
+  const sessao = getSession();
+  if (!sessao) return;
+  const user = getUsers().find((u) => u.id === sessao.id);
+  if (!user || !user.nascimento) return;
+  const hoje = new Date();
+  const nasc = new Date(user.nascimento);
+  if (hoje.getMonth() === nasc.getMonth() && hoje.getDate() === nasc.getDate()) {
+    const atual = storeGet(KEYS.coupon, null);
+    if (atual !== "BIRTHDAY15") {
+      storeSet(KEYS.coupon, "BIRTHDAY15");
+      showToast("Feliz aniversário! Cupom BIRTHDAY15 (15% OFF) aplicado!", "success", {
+        btn: { texto: "Ver carrinho", href: "carrinho.html" },
+      });
+    }
+  }
+}

@@ -49,6 +49,8 @@ function lerParametrosURL() {
   const cat = param("cat");
   const sort = param("sort");
   const promo = param("promo");
+  const preco = param("preco");
+  const tam = param("tam");
 
   if (q) {
     filtros.q = q;
@@ -66,6 +68,19 @@ function lerParametrosURL() {
   if (promo === "1") {
     filtros.promo = true;
     document.getElementById("filtro-promo").checked = true;
+  }
+  if (preco && ["ate200", "ate500", "ate1000", "mais1000"].includes(preco)) {
+    filtros.preco = preco;
+    const radio = document.getElementById(`preco-${preco}`);
+    if (radio) radio.checked = true;
+  }
+  if (tam) {
+    const selecionados = tam.split(",").filter((t) => TAMANHOS_FILTRO.includes(t));
+    filtros.tamanhos = selecionados;
+    selecionados.forEach((t) => {
+      const cb = document.getElementById(`tam-${encodeURIComponent(t)}`);
+      if (cb) cb.checked = true;
+    });
   }
 }
 
@@ -237,5 +252,20 @@ function aplicarFiltros() {
     `<strong>${resultados.length}</strong> ${resultados.length === 1 ? "produto encontrado" : "produtos encontrados"}`;
 
   renderizarChips();
+  sincronizarURL();
   aplicarReveals();
+  if (typeof atualizarBarraComparacao === "function") atualizarBarraComparacao();
+}
+
+function sincronizarURL() {
+  const params = new URLSearchParams();
+  if (filtros.q) params.set("q", filtros.q);
+  if (filtros.cat) params.set("cat", filtros.cat);
+  if (filtros.preco !== "todos") params.set("preco", filtros.preco);
+  if (filtros.tamanhos.length > 0) params.set("tam", filtros.tamanhos.join(","));
+  if (filtros.promo) params.set("promo", "1");
+  if (filtros.sort !== "relevancia") params.set("sort", filtros.sort);
+  const qs = params.toString();
+  const novaURL = qs ? `produtos.html?${qs}` : "produtos.html";
+  window.history.replaceState({}, "", novaURL);
 }

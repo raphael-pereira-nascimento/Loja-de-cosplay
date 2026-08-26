@@ -73,6 +73,11 @@ const PRODUTOS = [
       "Gola alta estruturada",
       "Bolsos internos discretos",
     ],
+    imagens: [
+      "https://live.staticflickr.com/2846/10136081583_739f01be0c_b.jpg",
+      "https://live.staticflickr.com/65535/54359124362_c73059e7ab_b.jpg",
+      "https://live.staticflickr.com/3826/9783779234_219d702d24_b.jpg",
+    ],
   },
   {
     id: 3,
@@ -95,6 +100,11 @@ const PRODUTOS = [
       "Botões metálicos gravados",
       "Costura dupla nos pontos de tensão",
       "Kit com 3 peças: casaco, calça e faixa",
+    ],
+    imagens: [
+      "https://live.staticflickr.com/66/165063665_aafe3d177c_b.jpg",
+      "https://live.staticflickr.com/3212/2774944633_ef12818bf3_b.jpg",
+      "https://live.staticflickr.com/3378/3327449616_33eb4083ef_b.jpg",
     ],
   },
   {
@@ -259,6 +269,11 @@ const PRODUTOS = [
       "Comprimento total 145cm",
       "2 peças",
     ],
+    imagens: [
+      "https://live.staticflickr.com/65535/54359124362_c73059e7ab_b.jpg",
+      "https://live.staticflickr.com/3378/3327449616_33eb4083ef_b.jpg",
+      "https://live.staticflickr.com/4031/4635122384_1be7d7b323_b.jpg",
+    ],
   },
   {
     id: 10,
@@ -283,9 +298,9 @@ const PRODUTOS = [
       "Lavável removendo o módulo eletrônico",
     ],
     imagens: [
-      "https://live.staticflickr.com/7804/46900319441_ea8132fc39_b.jpg",
-      "https://live.staticflickr.com/4900/46900316161_caa0759ab7_b.jpg",
-      "https://live.staticflickr.com/7890/46848260602_ca762e57cc_b.jpg",
+      "https://live.staticflickr.com/3212/2774944633_ef12818bf3_b.jpg",
+      "https://live.staticflickr.com/3826/9783779234_219d702d24_b.jpg",
+      "https://live.staticflickr.com/2846/10136081583_739f01be0c_b.jpg",
     ],
   },
   {
@@ -565,9 +580,9 @@ const PRODUTOS = [
       "Escova de manutenção inclusa",
     ],
     imagens: [
-      "https://live.staticflickr.com/5172/5556141394_1504bd3d55_b.jpg",
-      "https://live.staticflickr.com/5270/5555555543_559c07357c_b.jpg",
-      "https://live.staticflickr.com/6196/6099932714_5c39de52c6_b.jpg",
+      "https://live.staticflickr.com/778/23027656091_d2d40b982a_b.jpg",
+      "https://live.staticflickr.com/1681/25844635743_19a92b2414_b.jpg",
+      "https://live.staticflickr.com/1480/25847220074_317820e532_b.jpg",
     ],
   },
   {
@@ -893,6 +908,12 @@ function galeriaProduto(p) {
 
 function imagemPrincipal(p) {
   return galeriaProduto(p)[0];
+}
+
+function imagemThumbnail(p) {
+  const url = imagemPrincipal(p);
+  if (url.includes("live.staticflickr.com")) return url.replace("_b.jpg", "_z.jpg");
+  return url;
 }
 
 function fallbackImagem(seed) {

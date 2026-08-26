@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-bs-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:title" content="Comparar Produtos | CosplayHub">
+    <meta property="og:description" content="Compare especificações e preços lado a lado.">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="CosplayHub">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Comparar Produtos | CosplayHub">
+    <meta name="twitter:description" content="Compare especificações e preços lado a lado.">
+  <meta name="robots" content="noindex">
+  <title>Comparar Produtos | CosplayHub</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎭</text></svg>">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="dns-prefetch" href="https://live.staticflickr.com">
+    <link rel="dns-prefetch" href="https://upload.wikimedia.org">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+  <link href="css/style.css" rel="stylesheet">
+</head>
+<body class="d-flex flex-column min-vh-100">
+
+  <header id="site-header"></header>
+
+  <main id="main-content" class="flex-grow-1 container section-padding">
+
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb small">
+        <li class="breadcrumb-item"><a href="index.html" class="text-decoration-none text-muted-2">Início</a></li>
+        <li class="breadcrumb-item"><a href="produtos.html" class="text-decoration-none text-muted-2">Produtos</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Comparar</li>
+      </ol>
+    </nav>
+
+    <h1 class="font-display fw-bold h3 mb-4">Comparar <span class="text-gradient">produtos</span></h1>
+    <div class="section-title-bar mb-4"></div>
+
+    <div id="compare-conteudo"></div>
+
+    <div class="empty-state d-none" id="compare-vazio">
+      <div class="icon-ring"><i class="bi bi-arrow-left-right"></i></div>
+      <h3 class="font-display">Nenhum produto selecionado</h3>
+      <p class="text-muted-2">Volte ao catálogo e selecione 2 produtos para comparar.</p>
+      <a href="produtos.html" class="btn btn-gradient px-4 mt-2">
+        <i class="bi bi-arrow-left me-2"></i>Ir ao catálogo
+      </a>
+    </div>
+
+  </main>
+
+  <footer id="site-footer"></footer>
+  <div class="toast-container position-fixed bottom-0 end-0 p-3" id="toast-root" style="z-index:1090"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const params = new URLSearchParams(location.search);
+      const ids = params.getAll("id").map(Number).filter((id) => buscarProduto(id));
+
+      if (ids.length < 2) {
+        const fallback = getCompare();
+        if (fallback.length === 2) {
+          window.location.href = `comparar.html?id=${fallback[0]}&id=${fallback[1]}`;
+          return;
+        }
+        document.getElementById("compare-vazio").classList.remove("d-none");
+        return;
+      }
+
+      const p1 = buscarProduto(ids[0]);
+      const p2 = buscarProduto(ids[1]);
+      const container = document.getElementById("compare-conteudo");
+
+      const linhas = [
+        { label: "Categoria", v1: nomeCategoria(p1.categoria), v2: nomeCategoria(p2.categoria) },
+        { label: "Preço", v1: brl(p1.preco), v2: brl(p2.preco) },
+        { label: "Preço antigo", v1: p1.precoAntigo ? brl(p1.precoAntigo) : "—", v2: p2.precoAntigo ? brl(p2.precoAntigo) : "—" },
+        { label: "Desconto", v1: descontoPercentual(p1) ? `-${descontoPercentual(p1)}%` : "—", v2: descontoPercentual(p2) ? `-${descontoPercentual(p2)}%` : "—" },
+        { label: "Avaliação", v1: `${p1.avaliacao.toFixed(1)} (${p1.numAvaliacoes} avaliações)`, v2: `${p2.avaliacao.toFixed(1)} (${p2.numAvaliacoes} avaliações)` },
+        { label: "Vendas", v1: String(p1.vendas), v2: String(p2.vendas) },
+        { label: "Tamanhos", v1: p1.tamanhos.join(", "), v2: p2.tamanhos.join(", ") },
+        { label: "Estoque", v1: `${p1.estoque} un.`, v2: `${p2.estoque} un.` },
+        { label: "Novidade", v1: p1.novidade ? "Sim" : "Não", v2: p2.novidade ? "Sim" : "Não" },
+        { label: "Descrição", v1: p1.descricao.split(". ").slice(0, 2).join(". ") + ".", v2: p2.descricao.split(". ").slice(0, 2).join(". ") + "." },
+      ];
+
+      const maxEsp = Math.max(p1.especificacoes.length, p2.especificacoes.length);
+      for (let i = 0; i < maxEsp; i++) {
+        linhas.push({
+          label: `Especificação ${i + 1}`,
+          v1: p1.especificacoes[i] || "—",
+          v2: p2.especificacoes[i] || "—",
+        });
+      }
+
+      container.innerHTML = `
+        <div class="table-responsive">
+          <table class="table table-hover align-middle">
+            <thead>
+              <tr>
+                <th style="width:22%"></th>
+                <th style="width:39%" class="text-center">
+                  <a href="informacoes-produto.html?id=${p1.id}" class="text-decoration-none text-inherit">
+                    <img src="${imagemPrincipal(p1)}" alt="${p1.nome}" class="rounded-3 mb-3 border-subtle w-100" style="max-height:280px;object-fit:cover"
+                      onerror="this.onerror=null;this.src='${fallbackImagem(p1.id)}'">
+                    <h6 class="font-display fw-bold">${p1.nome}</h6>
+                  </a>
+                </th>
+                <th style="width:39%" class="text-center">
+                  <a href="informacoes-produto.html?id=${p2.id}" class="text-decoration-none text-inherit">
+                    <img src="${imagemPrincipal(p2)}" alt="${p2.nome}" class="rounded-3 mb-3 border-subtle w-100" style="max-height:280px;object-fit:cover"
+                      onerror="this.onerror=null;this.src='${fallbackImagem(p2.id)}'">
+                    <h6 class="font-display fw-bold">${p2.nome}</h6>
+                  </a>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              ${linhas.map((l) => `
+              <tr>
+                <td class="fw-semibold text-muted-2">${l.label}</td>
+                <td class="text-center small">${l.v1}</td>
+                <td class="text-center small">${l.v2}</td>
+              </tr>`).join("")}
+              <tr>
+                <td></td>
+                <td class="text-center py-4">
+                  <a href="informacoes-produto.html?id=${p1.id}" class="btn btn-gradient btn-sm px-4">
+                    <i class="bi bi-bag-plus me-1"></i>Ver produto
+                  </a>
+                </td>
+                <td class="text-center py-4">
+                  <a href="informacoes-produto.html?id=${p2.id}" class="btn btn-gradient btn-sm px-4">
+                    <i class="bi bi-bag-plus me-1"></i>Ver produto
+                  </a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>`;
+
+      document.title = `Comparar: ${p1.nome} × ${p2.nome} | CosplayHub`;
+    });
+  </script>
+</body>
+</html>

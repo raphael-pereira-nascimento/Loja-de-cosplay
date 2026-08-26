@@ -1,0 +1,16 @@
+{
+  "name": "CosplayHub — Loja de Cosplay & Props",
+  "short_name": "CosplayHub",
+  "description": "A maior loja de cosplays e props colecionáveis do Brasil",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#0b0d14",
+  "theme_color": "#8b5cf6",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%238b5cf6' width='100' height='100' rx='20'/><text y='.9em' font-size='70' x='15'>🎭</text></svg>",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

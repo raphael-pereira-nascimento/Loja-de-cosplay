@@ -319,6 +319,7 @@ body {
   position: relative;
   aspect-ratio: 4 / 5;
   overflow: hidden;
+  cursor: pointer;
 }
 .product-thumb img {
   width: 100%;
@@ -507,7 +508,15 @@ body {
 }
 
 .payment-option { cursor: pointer; }
-.payment-option input { display: none; }
+.payment-option input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
 .payment-option-body {
   border: 1px solid var(--ch-border);
   border-radius: .9rem;
@@ -692,6 +701,25 @@ body {
 @media (max-width: 991.98px) {
   .summary-box.sticky-top-2 { position: static; }
   .hero-slide { height: 480px; }
+}
+@media (max-width: 767.98px) {
+  .hero-slide { height: 360px; }
+  .hero-caption h1 { font-size: 1.6rem; }
+  .hero-caption p { font-size: .88rem; }
+  .cart-item-img { width: 72px; height: 86px; }
+  .ch-lightbox img { max-height: 70vh; }
+  .checkout-step .step-circle { width: 36px; height: 36px; font-size: .82rem; }
+}
+@media (max-width: 575.98px) {
+  .hero-slide { height: 280px; }
+  .hero-caption h1 { font-size: 1.25rem; }
+  .hero-caption p { font-size: .8rem; }
+  .hero-caption .btn { font-size: .82rem; padding: .45rem 1.1rem; }
+  .cart-item-img { width: 60px; height: 72px; }
+  .product-card .card-body { padding: .75rem !important; }
+  .product-card .product-name { font-size: .82rem !important; }
+  .ch-lightbox-btn { width: 36px; height: 36px; font-size: .9rem; }
+  .summary-box { padding: 1rem !important; }
 }
 
 /* ============================================================
@@ -898,7 +926,11 @@ img.carregada { opacity: 1; }
 .rating-input input {
   position: absolute;
   opacity: 0;
-  pointer-events: none;
+  width: 1px;
+  height: 1px;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 .rating-input label {
   cursor: pointer;
@@ -980,3 +1012,124 @@ img.carregada { opacity: 1; }
   line-height: 1;
   -webkit-text-stroke: 2px rgba(var(--ch-primary-rgb), .55);
 }
+
+/* ---------- Page transition ---------- */
+.page-transition {
+  opacity: 0;
+  transition: opacity .35s ease;
+}
+.page-transition.visible {
+  opacity: 1;
+}
+@media (prefers-reduced-motion: reduce) {
+  .page-transition { opacity: 1; transition: none; }
+}
+
+/* ---------- Lightbox ---------- */
+.ch-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background: rgba(0, 0, 0, .92);
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .3s ease;
+}
+.ch-lightbox.aberto {
+  opacity: 1;
+  pointer-events: auto;
+}
+.ch-lightbox img {
+  max-width: 90vw;
+  max-height: 85vh;
+  object-fit: contain;
+  border-radius: .75rem;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, .6);
+}
+.ch-lightbox-btn {
+  position: absolute;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,.2);
+  background: rgba(0, 0, 0, .5);
+  color: #fff;
+  font-size: 1.2rem;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: background .15s ease;
+}
+.ch-lightbox-btn:hover { background: rgba(255,255,255,.15); }
+.ch-lightbox-close { top: 1rem; right: 1rem; }
+.ch-lightbox-prev { left: 1rem; top: 50%; transform: translateY(-50%); }
+.ch-lightbox-next { right: 1rem; top: 50%; transform: translateY(-50%); }
+.ch-lightbox-counter {
+  position: absolute;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  color: rgba(255,255,255,.7);
+  font-size: .85rem;
+}
+
+/* ---------- Compare ---------- */
+.compare-check {
+  position: absolute;
+  bottom: .65rem;
+  left: .65rem;
+  z-index: 2;
+}
+.compare-check input { display: none; }
+.compare-check label {
+  display: flex;
+  align-items: center;
+  gap: .3rem;
+  padding: .25rem .55rem;
+  border-radius: 999px;
+  border: 1px solid var(--ch-border);
+  background: rgba(10, 11, 18, .62);
+  backdrop-filter: blur(6px);
+  color: #e7e9f0;
+  font-size: .7rem;
+  cursor: pointer;
+  transition: all .15s ease;
+}
+.compare-check input:checked + label {
+  background: var(--ch-gradient);
+  border-color: transparent;
+  color: #fff;
+}
+.compare-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1070;
+  background: var(--ch-surface);
+  border-top: 1px solid var(--ch-border);
+  padding: .75rem 1rem;
+  transform: translateY(100%);
+  transition: transform .3s ease;
+}
+.compare-bar.visivel { transform: translateY(0); }
+
+/* ---------- Toast button ---------- */
+.toast-action-btn {
+  margin-left: .5rem;
+  padding: .25rem .65rem;
+  border-radius: .5rem;
+  background: var(--ch-gradient);
+  color: #fff;
+  border: 0;
+  font-size: .78rem;
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: filter .15s ease;
+}
+.toast-action-btn:hover { filter: brightness(1.1); color: #fff; }

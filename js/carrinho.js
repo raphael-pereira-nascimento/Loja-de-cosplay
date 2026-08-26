@@ -1,4 +1,4 @@
-/* ============================================================
+﻿/* ============================================================
    CosplayHub — Página do carrinho
    ============================================================ */
 
@@ -31,6 +31,7 @@ function wireEventos() {
   });
 
   document.getElementById("btn-limpar-carrinho").addEventListener("click", () => {
+    if (!confirm("Tem certeza que deseja esvaziar o carrinho?")) return;
     clearCart();
     localStorage.removeItem(KEYS.coupon);
     cupomAtivo = null;
@@ -105,7 +106,7 @@ function renderBarraFrete() {
   box.innerHTML = `
     <div class="d-flex align-items-center gap-2 small mb-2">
       <i class="bi bi-truck fs-5" style="color:#c4b5fd"></i>
-      <span>Faltam apenas <strong class="text-white">${brl(falta)}</strong> para você ganhar <strong>frete grátis</strong>!</span>
+      <span>Faltam apenas <strong>${brl(falta)}</strong> para você ganhar <strong>frete grátis</strong>!</span>
     </div>
     <div class="progress" style="height:8px;background:var(--ch-border)">
       <div class="progress-bar" role="progressbar" style="width:${pct}%;background:var(--ch-gradient)"
@@ -122,7 +123,7 @@ function renderLista(itens) {
     <div class="filter-card p-3">
       <div class="d-flex gap-3">
 
-        <a href="produto.html?id=${p.id}" class="flex-shrink-0">
+        <a href="informacoes-produto.html?id=${p.id}" class="flex-shrink-0">
           <img src="${imagemPrincipal(p)}" alt="${p.nome}" class="cart-item-img"
             onerror="this.onerror=null;this.src='${fallbackImagem(p.id + "-mini")}'">
         </a>
@@ -131,8 +132,8 @@ function renderLista(itens) {
           <div class="d-flex justify-content-between gap-2">
             <div>
               <small class="text-uppercase fw-semibold" style="font-size:.64rem;color:#a78bfa">${nomeCategoria(p.categoria)}</small>
-              <h6 class="mb-1 mt-1"><a href="produto.html?id=${p.id}" class="text-decoration-none text-white">${p.nome}</a></h6>
-              <small class="text-muted-2">Tamanho: <strong class="text-white">${p.tamanho}</strong></small>
+              <h6 class="mb-1 mt-1"><a href="informacoes-produto.html?id=${p.id}" class="text-decoration-none" style="color:inherit">${p.nome}</a></h6>
+              <small class="text-muted-2">Tamanho: <strong>${p.tamanho}</strong></small>
             </div>
             <button type="button" class="btn-close btn-close-white opacity-50" data-acao="remover"
               data-id="${p.id}" data-tamanho="${p.tamanho}" aria-label="Remover item"></button>

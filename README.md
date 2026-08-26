@@ -1,4 +1,4 @@
-# 🎭 CosplayHub — E-commerce de Cosplay
+﻿# 🎭 CosplayHub — E-commerce de Cosplay
 
 Projeto educacional de um e-commerce completo de cosplays, fantasias e props, construído apenas com **front-end** (sem back-end). Todos os dados (carrinho, favoritos, usuários e pedidos) são persistidos no `localStorage` do navegador.
 
@@ -32,7 +32,7 @@ Créditos das fotografias: autores do Flickr/Wikimedia sob licenças Creative Co
 |---|---|
 | `index.html` | Landing page: hero carousel, categorias, destaques, banner promocional com cupom e contador regressivo, novidades, vistos recentemente e depoimentos |
 | `produtos.html` | Catálogo com busca instantânea, filtros (categoria, faixa de preço, tamanho, promoções), ordenação e chips de filtros ativos |
-| `produto.html?id=X` | Detalhes: galeria de fotos com skeleton, seleção de tamanho, quantidade, favoritar, compartilhar, avaliações da comunidade (salvas localmente) e relacionados + vistos recentemente |
+| `informacoes-produto.html?id=X` | Detalhes: galeria de fotos com skeleton, seleção de tamanho, quantidade, favoritar, compartilhar, avaliações da comunidade (salvas localmente) e relacionados + vistos recentemente |
 | `favoritos.html` | Lista de favoritos com opção de mover todos para o carrinho |
 | `carrinho.html` | Itens com controle de quantidade, barra de progresso para frete grátis, cupons e resumo do pedido |
 | `checkout.html` | Fluxo em 3 etapas: identificação → entrega (endereço + frete) → pagamento (Pix/cartão/boleto), com tela de confirmação |

@@ -1,4 +1,4 @@
-/* ============================================================
+﻿/* ============================================================
    CosplayHub — Painel administrativo (simulador educacional)
    Lê dados do localStorage e monta métricas fictícias.
    Senha demo: admin123
@@ -44,6 +44,8 @@ function abrirPainel() {
   renderEstoqueBaixo();
   renderTabelaPedidos();
   renderTabelaUsuarios();
+  renderNewsletter();
+  renderAniversariantes();
 }
 
 /* ---------------- Métricas ---------------- */
@@ -83,7 +85,7 @@ function renderMaisVendidos() {
   document.getElementById("lista-mais-vendidos").innerHTML = top5.map((p) => `
     <div class="bar-row">
       <span class="text-truncate" style="width:38%" title="${p.nome}">
-        <a href="produto.html?id=${p.id}" class="text-decoration-none">${p.nome}</a>
+        <a href="informacoes-produto.html?id=${p.id}" class="text-decoration-none">${p.nome}</a>
       </span>
       <span class="bar-track">
         <span class="bar-fill d-block" style="width:${Math.max(8, Math.round((p.vendas / maximo) * 100))}%"></span>
@@ -103,7 +105,7 @@ function renderEstoqueBaixo() {
       : criticos.slice(0, 6).map((p) => `
         <div class="bar-row">
           <span class="text-truncate" style="width:52%" title="${p.nome}">
-            <a href="produto.html?id=${p.id}" class="text-decoration-none">${p.nome}</a>
+            <a href="informacoes-produto.html?id=${p.id}" class="text-decoration-none">${p.nome}</a>
           </span>
           <span class="ms-auto"><span class="badge rounded-pill text-bg-warning">${p.estoque} un.</span></span>
         </div>`).join("");
@@ -163,4 +165,44 @@ function renderTabelaUsuarios() {
       <td class="text-end">${qtdPedidos}</td>
     </tr>`;
   }).join("");
+}
+
+/* ---------------- Newsletter ---------------- */
+
+function renderNewsletter() {
+  const emails = storeGet("ch_newsletter", []);
+  const box = document.getElementById("lista-newsletter");
+  if (!box) return;
+  if (emails.length === 0) {
+    box.innerHTML = '<p class="small text-muted-2 mb-0">Nenhum inscrito ainda.</p>';
+    return;
+  }
+  box.innerHTML = `
+    <p class="small mb-2"><strong>${emails.length}</strong> inscrito(s) na newsletter:</p>
+    <ul class="list-unstyled small mb-0">${emails.map((e) =>
+      `<li class="mb-1"><i class="bi bi-envelope me-2 text-muted-2"></i>${escapeHTML(e)}</li>`
+    ).join("")}</ul>`;
+}
+
+/* ---------------- Aniversariantes do mês ---------------- */
+
+function renderAniversariantes() {
+  const box = document.getElementById("lista-aniversariantes");
+  if (!box) return;
+  const hoje = new Date();
+  const usuarios = getUsers().filter((u) => {
+    if (!u.nascimento) return false;
+    const n = new Date(u.nascimento);
+    return n.getMonth() === hoje.getMonth();
+  });
+  if (usuarios.length === 0) {
+    box.innerHTML = '<p class="small text-muted-2 mb-0">Nenhum aniversariante este mês.</p>';
+    return;
+  }
+  box.innerHTML = `
+    <p class="small mb-2"><strong>${usuarios.length}</strong> aniversariante(s) em ${hoje.toLocaleDateString("pt-BR", { month: "long" })}:</p>
+    <ul class="list-unstyled small mb-0">${usuarios.map((u) => {
+      const n = new Date(u.nascimento);
+      return `<li class="mb-1"><i class="bi bi-gift me-2" style="color:var(--ch-accent)"></i>${escapeHTML(u.nome)} — ${n.getDate()}/${n.getMonth() + 1}</li>`;
+    }).join("")}</ul>`;
 }

@@ -1,4 +1,4 @@
-/* ============================================================
+﻿/* ============================================================
    CosplayHub — Histórico de pedidos
    ============================================================ */
 
@@ -128,7 +128,7 @@ function pedidoCardHTML(p) {
             <div class="d-flex gap-3 align-items-center">
               ${
                 produto
-                  ? `<a href="produto.html?id=${item.id}"><img src="${imagemPrincipal(produto)}"
+                  ? `<a href="informacoes-produto.html?id=${item.id}"><img src="${imagemPrincipal(produto)}"
                       alt="${item.nome}" width="52" height="64" class="rounded-3 border-subtle"
                       style="object-fit:cover" loading="lazy"
                       onerror="this.onerror=null;this.src='${fallbackImagem(item.id + "-pd")}'"></a>`
