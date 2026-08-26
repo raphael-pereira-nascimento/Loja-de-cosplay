@@ -615,7 +615,7 @@ function renderChrome() {
   initTema();
   if (!document.getElementById("skip-link")) {
     document.body.insertAdjacentHTML("afterbegin",
-      '<a href="#main-content" class="visually-hidden-focusable position-absolute top-0 start-0 m-2 px-3 py-2 rounded-3 z-3" style="background:var(--ch-primary);color:#fff;font-weight:600">Pular para o conteúdo</a>');
+      '<a id="skip-link" href="#main-content" class="visually-hidden-focusable position-absolute top-0 start-0 m-2 px-3 py-2 rounded-3 z-3" style="background:var(--ch-primary);color:#fff;font-weight:600">Pular para o conteúdo</a>');
   }
   document.getElementById("site-header").innerHTML = headerTemplate();
   document.getElementById("site-footer").innerHTML = footerTemplate();
