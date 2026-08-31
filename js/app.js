@@ -102,9 +102,14 @@ function addToCart(id, qty = 1, tamanho = null, abrirDrawer = true) {
   }
   storeSet(KEYS.cart, itens);
   updateBadges();
-  atualizarMiniCarrinho();
-  if (abrirDrawer) abrirMiniCarrinho();
+
+  if (abrirDrawer) {
+    showToast(`${produto.nome} adicionado ao carrinho!`, "success", {
+      btn: { texto: "Ver carrinho", href: "carrinho.html" },
+    });
+  }
 }
+
 
 function setQtyItem(id, tamanho, qty) {
   const itens = cartItems();
@@ -114,19 +119,16 @@ function setQtyItem(id, tamanho, qty) {
   item.qty = Math.max(1, Math.min(qty, produto ? produto.estoque : 99));
   storeSet(KEYS.cart, itens);
   updateBadges();
-  atualizarMiniCarrinho();
 }
 
 function removeItemCart(id, tamanho) {
   storeSet(KEYS.cart, cartItems().filter((i) => !(i.id === id && i.tamanho === tamanho)));
   updateBadges();
-  atualizarMiniCarrinho();
 }
 
 function clearCart() {
   storeSet(KEYS.cart, []);
   updateBadges();
-  atualizarMiniCarrinho();
 }
 
 /* ---------------- Favoritos ---------------- */
@@ -325,7 +327,7 @@ function toggleFavBtn(btn, id) {
 }
 
 function addFromCard(id) {
-  addToCart(id, 1, null);
+  addToCart(id, 1, null, true);
 }
 
 /* ---------------- Header e Footer ---------------- */
@@ -619,7 +621,6 @@ function renderChrome() {
   }
   document.getElementById("site-header").innerHTML = headerTemplate();
   document.getElementById("site-footer").innerHTML = footerTemplate();
-  injectMiniCarrinho();
   injectCompareBar();
   wireChromeEvents();
   updateBadges();
@@ -692,107 +693,6 @@ function addUserReview(idProduto, avaliacao) {
   if (!todas[chave]) todas[chave] = [];
   todas[chave].push(avaliacao);
   storeSet(KEYS.reviews, todas);
-}
-
-/* ---------------- Mini-carrinho (offcanvas) ---------------- */
-
-function miniCarrinhoTemplate() {
-  return `
-  <div class="offcanvas offcanvas-end bg-surface" tabindex="-1"
-    id="mini-carrinho" aria-labelledby="mini-carrinho-titulo">
-    <div class="offcanvas-header py-3">
-      <h5 class="offcanvas-title font-display fw-bold m-0" id="mini-carrinho-titulo">
-        <i class="bi bi-bag-check me-2"></i>Meu carrinho
-      </h5>
-      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Fechar"></button>
-    </div>
-    <div class="offcanvas-body overflow-auto" id="mini-carrinho-itens"></div>
-    <div class="p-3" id="mini-carrinho-footer"></div>
-  </div>`;
-}
-
-function injectMiniCarrinho() {
-  if (!document.getElementById("mini-carrinho")) {
-    document.body.insertAdjacentHTML("beforeend", miniCarrinhoTemplate());
-    document.getElementById("mini-carrinho").addEventListener("click", (e) => {
-      const btn = e.target.closest("[data-mini-action]");
-      if (!btn) return;
-      const id = Number(btn.dataset.id);
-      const tamanho = btn.dataset.tamanho;
-      const item = cartItems().find((i) => i.id === id && i.tamanho === tamanho);
-      const action = btn.dataset.miniAction;
-      if (action === "inc") setQtyItem(id, tamanho, (item ? item.qty : 1) + 1);
-      else if (action === "dec") setQtyItem(id, tamanho, (item ? item.qty : 2) - 1);
-      else if (action === "rem") removeItemCart(id, tamanho);
-    });
-  }
-  atualizarMiniCarrinho();
-}
-
-function atualizarMiniCarrinho() {
-  const box = document.getElementById("mini-carrinho-itens");
-  const foot = document.getElementById("mini-carrinho-footer");
-  if (!box || !foot) return;
-
-  const itens = cartDetailed();
-  if (itens.length === 0) {
-    box.innerHTML = `
-      <div class="empty-state my-auto w-100 py-5">
-        <div class="icon-ring"><i class="bi bi-bag"></i></div>
-        <h6 class="fw-bold mb-1">Seu carrinho está vazio</h6>
-        <p class="text-muted-2 small mb-3">Que tal um cosplay novinho?</p>
-        <a href="produtos.html" class="btn btn-outline-brand btn-sm">Ver produtos</a>
-      </div>`;
-    foot.innerHTML = "";
-    return;
-  }
-
-  box.innerHTML = itens.map((item) => `
-    <div class="mini-item">
-      <img src="${imagemPrincipal(item)}" alt="${item.nome}" loading="lazy"
-        onerror="this.onerror=null;this.src='${fallbackImagem(item.id)}'">
-      <div style="min-width:0" class="flex-grow-1">
-        <a href="informacoes-produto.html?id=${item.id}" class="mini-item-nome fw-semibold d-block">${item.nome}</a>
-        <small class="text-muted-2">Tam.: ${item.tamanho} • ${brl(item.preco)}</small>
-        <div class="d-flex align-items-center justify-content-between mt-2 gap-2">
-          <div class="d-flex align-items-center gap-2">
-            <button type="button" class="mini-qtd-btn" data-mini-action="dec"
-              data-id="${item.id}" data-tamanho="${item.tamanho}" aria-label="Diminuir quantidade"><i class="bi bi-dash-lg"></i></button>
-            <span class="small fw-semibold">${item.qty}</span>
-            <button type="button" class="mini-qtd-btn" data-mini-action="inc"
-              data-id="${item.id}" data-tamanho="${item.tamanho}" aria-label="Aumentar quantidade"><i class="bi bi-plus-lg"></i></button>
-          </div>
-          <div class="d-flex align-items-center gap-2">
-            <strong class="small">${brl(item.linhaTotal)}</strong>
-            <button type="button" class="btn btn-sm text-danger p-1 lh-1"
-              data-mini-action="rem" data-id="${item.id}" data-tamanho="${item.tamanho}" aria-label="Remover item"><i class="bi bi-trash3"></i></button>
-          </div>
-        </div>
-      </div>
-    </div>`).join("");
-
-  const subtotal = cartSubtotal();
-  const faltaFrete = FRETE_GRATIS_LIMITE - subtotal;
-  foot.innerHTML = `
-    ${
-      faltaFrete > 0
-        ? `<p class="small text-muted-2 mb-2"><i class="bi bi-truck me-1"></i>Faltam <strong>${brl(faltaFrete)}</strong> para frete grátis!</p>`
-        : `<p class="small text-success mb-2"><i class="bi bi-truck me-1"></i><strong>Você ganhou frete grátis!</strong></p>`
-    }
-    <div class="d-flex justify-content-between align-items-center mb-3">
-      <span class="text-muted-2">Subtotal (${cartCount()} ${cartCount() === 1 ? "item" : "itens"})</span>
-      <strong class="fs-5">${brl(subtotal)}</strong>
-    </div>
-    <div class="d-grid gap-2">
-      <a href="checkout.html" class="btn btn-gradient"><i class="bi bi-credit-card me-1"></i>Finalizar compra</a>
-      <a href="carrinho.html" class="btn btn-outline-brand btn-sm">Ver carrinho completo</a>
-    </div>`;
-}
-
-function abrirMiniCarrinho() {
-  const el = document.getElementById("mini-carrinho");
-  if (!el || typeof bootstrap === "undefined") return;
-  bootstrap.Offcanvas.getOrCreateInstance(el).show();
 }
 
 /* ---------------- Reveal on-scroll ---------------- */
