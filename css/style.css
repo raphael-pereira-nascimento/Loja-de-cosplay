@@ -255,16 +255,29 @@ body {
   background-color: rgba(255, 255, 255, .5);
 }
 .carousel-indicators .active { background-color: var(--ch-primary); }
-.carousel-control-prev-icon,
-.carousel-control-next-icon {
-  filter: drop-shadow(0 2px 6px rgba(0,0,0,.6));
-}
-.hero-caption .carousel-control-prev,
-.hero-caption .carousel-control-next,
-.carousel-control-prev,
-.carousel-control-next {
-  width: 8%;
+.hero-nav-btn.carousel-control-prev,
+.hero-nav-btn.carousel-control-next {
+  width: 52px;
+  height: 52px;
+  top: 50%;
+  bottom: auto;
+  transform: translateY(-50%);
+  opacity: .95;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, .55);
+  border: 2px solid rgba(255, 255, 255, .45);
   color: #fff;
+  display: grid;
+  place-items: center;
+}
+.hero-nav-btn.carousel-control-prev { left: 1.25rem; }
+.hero-nav-btn.carousel-control-next { right: 1.25rem; }
+.hero-nav-btn i { font-size: 1.7rem; line-height: 1; color: #fff; text-shadow: 0 2px 6px rgba(0,0,0,.7); }
+.hero-nav-btn:hover,
+.hero-nav-btn:focus {
+  opacity: 1;
+  background: var(--ch-gradient);
+  border-color: transparent;
 }
 
 /* ---------- Seções ---------- */
@@ -739,6 +752,11 @@ body {
   .cart-item-img { width: 72px; height: 86px; }
   .ch-lightbox img { max-height: 70vh; }
   .checkout-step .step-circle { width: 36px; height: 36px; font-size: .82rem; }
+  .hero-nav-btn.carousel-control-prev,
+  .hero-nav-btn.carousel-control-next { width: 40px; height: 40px; }
+  .hero-nav-btn i { font-size: 1.2rem; }
+  .hero-nav-btn.carousel-control-prev { left: .6rem; }
+  .hero-nav-btn.carousel-control-next { right: .6rem; }
 }
 @media (max-width: 575.98px) {
   .hero-slide { height: 280px; }
