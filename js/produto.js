@@ -263,13 +263,25 @@ function iniciaisNome(nome) {
     .slice(0, 2);
 }
 
+function avatarHTML(nome, semente) {
+  const iniciais = iniciaisNome(nome);
+  const idx = (Math.abs(semente) % 70) + 1;
+  const nomeSeguro = escapeHTML(nome);
+  return `
+  <span class="review-avatar" role="img" aria-label="Foto de ${nomeSeguro}">
+    <img src="https://i.pravatar.cc/120?img=${idx}" alt="Foto de ${nomeSeguro}" loading="lazy"
+      onerror="this.remove()">
+    <span class="avatar-fallback">${iniciais}</span>
+  </span>`;
+}
+
 function cardAvaliacaoUsuario(a) {
   return `
   <div class="col-md-4">
     <div class="rounded-3 p-3 h-100"
       style="background:rgba(var(--ch-primary-rgb),.07);border:1px solid rgba(var(--ch-primary-rgb),.35)">
       <div class="d-flex align-items-center gap-2 mb-2">
-        <span class="review-avatar">${iniciaisNome(a.nome)}</span>
+        ${avatarHTML(a.nome, a.nome.charCodeAt(0) * 7 + a.data.length)}
         <div>
           <strong class="d-block small">${escapeHTML(a.nome)}</strong>
           ${estrelasHTML(a.nota)}
@@ -296,16 +308,11 @@ function renderizarAvaliacoes() {
 
   const fake = [0, 1, 2].map((i) => {
     const idx = (inicio + i) % nomes.length;
-    const iniciais = nomes[idx]
-      .split(" ")
-      .map((parte) => parte[0])
-      .join("")
-      .replace(".", "");
     return `
     <div class="col-md-4">
       <div class="bg-surface-2 border-subtle rounded-3 p-3 h-100">
         <div class="d-flex align-items-center gap-2 mb-2">
-          <span class="review-avatar">${iniciais}</span>
+          ${avatarHTML(nomes[idx], idx * 13 + inicio * 7)}
           <div>
             <strong class="d-block small">${nomes[idx]}</strong>
             ${estrelasHTML(Math.max(4, Math.round(produtoAtual.avaliacao)))}

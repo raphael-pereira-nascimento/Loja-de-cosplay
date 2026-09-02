@@ -20,7 +20,10 @@ const estado = {
 };
 
 document.addEventListener("DOMContentLoaded", () => {
-  if (!requireLogin("checkout.html")) return;
+  if (!getSession()) {
+    showAvisoLogin();
+    return;
+  }
 
   const itens = cartDetailed();
   if (itens.length === 0) {
@@ -31,6 +34,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
   iniciarCheckout();
 });
+
+function showAvisoLogin() {
+  document.title = "Login necessário | CosplayHub";
+  const secao = document.getElementById("carrinho-vazio-checkout");
+  if (secao) secao.classList.remove("d-none");
+
+  const vazioMsg = document.getElementById("carrinho-vazio-checkout");
+  if (vazioMsg) {
+    vazioMsg.querySelector(".icon-ring i").className = "bi bi-person-lock";
+    vazioMsg.querySelector("h3").textContent = "Faça login para finalizar a compra";
+    vazioMsg.querySelector("p").textContent = "Para continuar com o checkout, entre na sua conta ou crie uma gratuita.";
+  }
+  const btnLogin = document.getElementById("btn-aviso-login");
+  if (btnLogin) btnLogin.classList.remove("d-none");
+  showToast("Para finalizar a compra, faça login na sua conta.", "warning", { btn: { href: "login.html?redirect=checkout.html", texto: "Entrar" } });
+}
 
 function iniciarCheckout() {
   preencherUsuario();

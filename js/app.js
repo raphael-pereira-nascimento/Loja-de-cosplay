@@ -288,9 +288,11 @@ function productCardHTML(p) {
           <i class="bi ${favoritado ? "bi-heart-fill" : "bi-heart"}"></i>
         </button>
         <div class="compare-check">
-          <input type="checkbox" id="cmp-${p.id}" ${getCompare().includes(p.id) ? "checked" : ""}
-            onchange="toggleCompare(${p.id})">
-          <label for="cmp-${p.id}"><i class="bi bi-arrow-left-right"></i></label>
+          <button type="button" class="${getCompare().includes(p.id) ? "active" : ""}"
+            aria-pressed="${getCompare().includes(p.id)}" title="Comparar produto"
+            onclick="toggleCompareBtn(this, ${p.id})">
+            <i class="bi bi-arrow-left-right"></i>
+          </button>
         </div>
         <a href="informacoes-produto.html?id=${p.id}" class="d-block text-decoration-none">
           <img src="${imagemThumbnail(p)}" alt="${p.nome}" loading="lazy" class="img-fade"
@@ -520,6 +522,7 @@ function updateBadges() {
 
 function wireChromeEvents() {
   initAutocomplete();
+  initPurpurina();
 
   const news = document.getElementById("newsletter-form");
   if (news) {
@@ -542,6 +545,61 @@ function wireChromeEvents() {
       news.classList.remove("was-validated");
     });
   }
+}
+
+/* ---------------- Purpurina (efeito no mouse) ---------------- */
+
+function initPurpurina() {
+  const layer = document.createElement("div");
+  layer.id = "sparkle-layer";
+  Object.assign(layer.style, {
+    position: "fixed",
+    inset: "0",
+    pointerEvents: "none",
+    zIndex: "9999",
+    overflow: "hidden",
+  });
+  document.body.appendChild(layer);
+
+  const cores = ["#8b5cf6", "#ec4899", "#fbbf24", "#ffffff", "#22d3ee", "#a78bfa"];
+  let ultimoX = -1;
+  let ultimoY = -1;
+  const intervaloMin = 8;
+
+  document.addEventListener("mousemove", (e) => {
+    const dx = e.clientX - ultimoX;
+    const dy = e.clientY - ultimoY;
+    if (ultimoX !== -1 && dx * dx + dy * dy < intervaloMin * intervaloMin) return;
+    ultimoX = e.clientX;
+    ultimoY = e.clientY;
+
+    const qtd = Math.floor(Math.random() * 3) + 1;
+    for (let i = 0; i < qtd; i++) {
+      const span = document.createElement("span");
+      const angulo = Math.random() * Math.PI * 2;
+      const dist = 24 + Math.random() * 42;
+      const vx = Math.cos(angulo) * dist;
+      const vy = Math.sin(angulo) * dist - 18;
+      const tamanho = 4 + Math.random() * 5;
+      span.style.cssText = `
+        position:absolute;
+        left:${e.clientX}px;
+        top:${e.clientY}px;
+        width:${tamanho}px;
+        height:${tamanho}px;
+        background:${cores[Math.floor(Math.random() * cores.length)]};
+        border-radius:50%;
+        box-shadow:0 0 8px 1px currentColor;
+        transform:translate(-50%,-50%);
+        opacity:1;
+        --sx:${vx}px;
+        --sy:${vy}px;
+        animation:sparkle-voar .65s ease-out forwards;
+      `;
+      layer.appendChild(span);
+      setTimeout(() => span.remove(), 700);
+    }
+  });
 }
 
 /* ---------------- Autocomplete da busca ---------------- */
@@ -730,7 +788,12 @@ setTimeout(() => aplicarReveals(), 300);
 /* ---------------- Comparação de produtos ---------------- */
 
 function getCompare() {
-  return storeGet(KEYS.compare, []);
+  const lista = storeGet(KEYS.compare, []);
+  const validos = lista.filter((id) => typeof PRODUTOS !== "undefined" && PRODUTOS.some((p) => p.id === Number(id)));
+  if (validos.length !== lista.length) {
+    storeSet(KEYS.compare, validos);
+  }
+  return validos;
 }
 
 function toggleCompare(id) {
@@ -742,10 +805,17 @@ function toggleCompare(id) {
     lista.push(id);
   } else {
     showToast("Você pode comparar no máximo 2 produtos.", "warning");
-    return;
+    return lista.includes(id);
   }
   storeSet(KEYS.compare, lista);
   atualizarBarraComparacao();
+  return lista.includes(id);
+}
+
+function toggleCompareBtn(btn, id) {
+  const ativo = toggleCompare(id);
+  btn.classList.toggle("active", ativo);
+  btn.setAttribute("aria-pressed", String(ativo));
 }
 
 function injectCompareBar() {

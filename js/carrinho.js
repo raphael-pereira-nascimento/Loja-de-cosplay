@@ -30,15 +30,6 @@ function wireEventos() {
     renderCarrinho();
   });
 
-  document.getElementById("btn-limpar-carrinho").addEventListener("click", () => {
-    if (!confirm("Tem certeza que deseja esvaziar o carrinho?")) return;
-    clearCart();
-    localStorage.removeItem(KEYS.coupon);
-    cupomAtivo = null;
-    showToast("Carrinho esvaziado.", "info");
-    renderCarrinho();
-  });
-
   document.getElementById("lista-itens").addEventListener("click", (e) => {
     const btn = e.target.closest("[data-acao]");
     if (!btn) return;

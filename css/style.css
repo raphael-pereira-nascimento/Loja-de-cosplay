@@ -634,6 +634,23 @@ body {
   place-items: center;
   font-weight: 600;
   color: #fff;
+  overflow: hidden;
+  flex-shrink: 0;
+  position: relative;
+}
+.review-avatar img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+.review-avatar .avatar-fallback {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
 }
 
 /* ---------- Empty state ---------- */
@@ -694,11 +711,32 @@ body {
   border-radius: 1rem;
 }
 
+@keyframes sparkle-voar {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(calc(-50% + var(--sx)), calc(-50% + var(--sy))) scale(0);
+    opacity: 0;
+  }
+}
+
 /* ---------- Footer ---------- */
 .footer {
   background: #07080d;
   border-top: 1px solid var(--ch-border);
-  --ch-muted: #9aa1b2;
+  --ch-muted: #aab0c2;
+}
+.footer,
+.footer .col,
+.footer h1, .footer h2, .footer h3, .footer h4, .footer h5, .footer h6,
+.footer p, .footer li, .footer span, .footer .font-display {
+  color: #eef0f6 !important;
+}
+.footer .text-muted-2,
+.footer small {
+  color: var(--ch-muted) !important;
 }
 .footer a {
   color: var(--ch-muted);
@@ -1090,25 +1128,31 @@ img.carregada { opacity: 1; }
   left: .65rem;
   z-index: 2;
 }
-.compare-check input { display: none; }
-.compare-check label {
+.compare-check button {
   display: flex;
   align-items: center;
-  gap: .3rem;
-  padding: .25rem .55rem;
-  border-radius: 999px;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
   border: 1px solid var(--ch-border);
   background: rgba(10, 11, 18, .62);
   backdrop-filter: blur(6px);
   color: #e7e9f0;
-  font-size: .7rem;
+  font-size: .95rem;
   cursor: pointer;
+  padding: 0;
   transition: all .15s ease;
 }
-.compare-check input:checked + label {
+.compare-check button:hover {
+  color: #fff;
+  border-color: rgba(255, 255, 255, .45);
+}
+.compare-check button.active {
   background: var(--ch-gradient);
   border-color: transparent;
   color: #fff;
+  box-shadow: 0 4px 14px rgba(139, 92, 246, .5);
 }
 .compare-bar {
   position: fixed;

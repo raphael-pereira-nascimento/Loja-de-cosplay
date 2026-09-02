@@ -74,9 +74,9 @@ const PRODUTOS = [
       "Bolsos internos discretos",
     ],
     imagens: [
-      "https://live.staticflickr.com/2846/10136081583_739f01be0c_b.jpg",
-      "https://live.staticflickr.com/65535/54359124362_c73059e7ab_b.jpg",
-      "https://live.staticflickr.com/3826/9783779234_219d702d24_b.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/f/ff/Kuro-Shozoku-Ninja-Costume-at-Iga-Ninja-Museum.png",
+      "https://upload.wikimedia.org/wikipedia/commons/7/7b/Hooded_Cloaks_of_Bandon_-_geograph.org.uk_-_2386474.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/3/30/Kuro-Shozoku-Ninja-Costume-at-Iga-Ninja-Museum_%28cropped_to_waraji%29.png",
     ],
   },
   {
@@ -102,9 +102,9 @@ const PRODUTOS = [
       "Kit com 3 peças: casaco, calça e faixa",
     ],
     imagens: [
-      "https://live.staticflickr.com/66/165063665_aafe3d177c_b.jpg",
-      "https://live.staticflickr.com/3212/2774944633_ef12818bf3_b.jpg",
-      "https://live.staticflickr.com/3378/3327449616_33eb4083ef_b.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/9/90/Japanese_school_uniform_dsc06050.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/c/cc/Japanese_school_uniform_5.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/7/75/Japanese_school_uniform_6.jpg",
     ],
   },
   {
@@ -298,9 +298,9 @@ const PRODUTOS = [
       "Lavável removendo o módulo eletrônico",
     ],
     imagens: [
-      "https://live.staticflickr.com/3212/2774944633_ef12818bf3_b.jpg",
-      "https://live.staticflickr.com/3826/9783779234_219d702d24_b.jpg",
-      "https://live.staticflickr.com/2846/10136081583_739f01be0c_b.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/e/ee/LED_Costume_by_Beo_Beyond.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/7/73/Girl_in_cyber_costume_at_Katsucon_2013.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/1/1a/Cyberpunk_Girl.jpeg",
     ],
   },
   {
@@ -552,9 +552,9 @@ const PRODUTOS = [
       "Acompanha peruca-cap para proteger o cabelo",
     ],
     imagens: [
-      "https://live.staticflickr.com/6082/6099384805_53b31e5843_b.jpg",
-      "https://live.staticflickr.com/6065/6099385157_daf44764be_b.jpg",
-      "https://live.staticflickr.com/6207/6099385887_fe91a22ca7_b.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/0/08/Chicago_Pride_Parade_2012_Pink_Wig_%2814133780599%29.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/8/8e/Hot_Wig_%285878924631%29.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/4/49/Mermaid_Parade_%2860777%29.jpg",
     ],
   },
   {
@@ -829,9 +829,9 @@ const PRODUTOS = [
       "2 bolsos internos",
     ],
     imagens: [
-      "https://live.staticflickr.com/223/524522552_e3d57b9a7b_b.jpg",
-      "https://live.staticflickr.com/7436/16437275772_1e36445d42_b.jpg",
-      "https://upload.wikimedia.org/wikipedia/commons/1/1f/Bardon_Mill%2C_Housesteads_Roman_Fort_Museum%2C_Three_spirits_wearing_hooded_cloaks_-_geograph.org.uk_-_7851709.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/7/7b/Hooded_Cloaks_of_Bandon_-_geograph.org.uk_-_2386474.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/9/98/%22The_man_in_the_red_cloak%22%2C_Omagh_-_geograph.org.uk_-_5232593.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/a/a8/Barbara_Stanwyck_in_The_Man_with_a_Cloak_trailer.jpg",
     ],
   },
   {

@@ -33,9 +33,14 @@
       <div class="icon-ring"><i class="bi bi-bag-x"></i></div>
       <h3 class="font-display">Seu carrinho está vazio</h3>
       <p class="text-muted-2">Adicione produtos ao carrinho antes de finalizar a compra.</p>
-      <a href="produtos.html" class="btn btn-gradient px-4 mt-2">
-        <i class="bi bi-arrow-right me-2"></i>Ver produtos
-      </a>
+      <div class="d-flex flex-column flex-sm-row gap-2 justify-content-center mt-2">
+        <a href="produtos.html" class="btn btn-gradient px-4">
+          <i class="bi bi-arrow-right me-2"></i>Ver produtos
+        </a>
+        <a href="login.html?redirect=checkout.html" class="btn btn-outline-brand px-4 d-none" id="btn-aviso-login">
+          <i class="bi bi-box-arrow-in-right me-2"></i>Fazer login
+        </a>
+      </div>
     </div>
 
     <div class="d-none" id="checkout-conteudo">
