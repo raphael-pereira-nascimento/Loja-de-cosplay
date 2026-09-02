@@ -265,11 +265,13 @@ function iniciaisNome(nome) {
 
 function avatarHTML(nome, semente) {
   const iniciais = iniciaisNome(nome);
-  const idx = (Math.abs(semente) % 70) + 1;
+  const s = Math.abs(semente);
+  const genero = s % 2 === 0 ? "women" : "men";
+  const n = (s % 99) + 1;
   const nomeSeguro = escapeHTML(nome);
   return `
   <span class="review-avatar" role="img" aria-label="Foto de ${nomeSeguro}">
-    <img src="https://i.pravatar.cc/120?img=${idx}" alt="Foto de ${nomeSeguro}" loading="lazy"
+    <img src="https://randomuser.me/api/portraits/${genero}/${n}.jpg" alt="Foto de ${nomeSeguro}" loading="lazy"
       onerror="this.remove()">
     <span class="avatar-fallback">${iniciais}</span>
   </span>`;
@@ -312,7 +314,7 @@ function renderizarAvaliacoes() {
     <div class="col-md-4">
       <div class="bg-surface-2 border-subtle rounded-3 p-3 h-100">
         <div class="d-flex align-items-center gap-2 mb-2">
-          ${avatarHTML(nomes[idx], idx * 13 + inicio * 7)}
+          ${avatarHTML(nomes[idx], idx * 37 + produtoAtual.id * 11 + inicio * 7)}
           <div>
             <strong class="d-block small">${nomes[idx]}</strong>
             ${estrelasHTML(Math.max(4, Math.round(produtoAtual.avaliacao)))}

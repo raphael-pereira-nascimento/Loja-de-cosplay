@@ -75,7 +75,6 @@ const PRODUTOS = [
     ],
     imagens: [
       "https://upload.wikimedia.org/wikipedia/commons/f/ff/Kuro-Shozoku-Ninja-Costume-at-Iga-Ninja-Museum.png",
-      "https://upload.wikimedia.org/wikipedia/commons/7/7b/Hooded_Cloaks_of_Bandon_-_geograph.org.uk_-_2386474.jpg",
       "https://upload.wikimedia.org/wikipedia/commons/3/30/Kuro-Shozoku-Ninja-Costume-at-Iga-Ninja-Museum_%28cropped_to_waraji%29.png",
     ],
   },
