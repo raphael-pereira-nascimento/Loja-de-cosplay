@@ -1,5 +1,5 @@
 /* ============================================================
-   CosplayHub — Catálogo (filtros, busca e ordenação)
+  CosplayHub — Catálogo (filtros, busca e ordenação)
    ============================================================ */
 
 const TAMANHOS_FILTRO = ["P", "M", "G", "GG", "Único"];

@@ -1,5 +1,5 @@
 /* ============================================================
-   CosplayHub — Página de detalhes do produto
+  CosplayHub — Página de detalhes do produto
    ============================================================ */
 
 let produtoAtual = null;

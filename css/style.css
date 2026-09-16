@@ -432,9 +432,14 @@ body {
   border: 1px solid var(--ch-border);
   border-radius: 1rem;
 }
+
+.form-check-input {
+  border: 1px solid var(--ch-primary);
+}
+
 .form-check-input:checked {
   background-color: var(--ch-primary);
-  border-color: var(--ch-primary);
+  border-color: var(--ch-prima);
 }
 .chip {
   display: inline-flex;
