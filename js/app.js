@@ -392,7 +392,7 @@ function headerTemplate() {
               data-bs-toggle="dropdown" aria-expanded="false">Categorias</a>
             <ul class="dropdown-menu">${categoriasItens}</ul>
           </li>
-          <li class="nav-item"><a class="nav-link" href="produtos.html?promo=1">% Promoções</a></li>
+          <li class="nav-item"><a class="nav-link" href="produtos.html?promo=1">Promoções</a></li>
         </ul>
         <form class="nav-search d-flex flex-grow-1 my-3 my-lg-0 me-lg-3" role="search" id="header-search" autocomplete="off">
           <div class="search-wrap">
@@ -489,8 +489,8 @@ function footerTemplate() {
         <div class="col-md-8 col-lg-3">
           <h6 class="fw-bold mb-3">Contato</h6>
           <ul class="list-unstyled text-muted-2">
-            <li class="mb-2"><i class="bi bi-geo-alt me-2"></i>Rua dos Heróis, 42 — São Paulo/SP</li>
-            <li class="mb-2"><i class="bi bi-whatsapp me-2"></i>(11) 90000-0000</li>
+            <li class="mb-2"><i class="bi bi-geo-alt me-2"></i>Rua dos Heróis, 42 — Cuiabá/MT</li>
+            <li class="mb-2"><i class="bi bi-whatsapp me-2"></i>(65) 90000-0000</li>
             <li class="mb-2"><i class="bi bi-envelope me-2"></i>contato@cosplayhub.com.br</li>
             <li class="mb-2"><i class="bi bi-clock me-2"></i>Seg a Sex, 9h às 18h</li>
           </ul>
@@ -499,7 +499,7 @@ function footerTemplate() {
 
       <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-2 pt-3 border-top border-subtle small text-muted-2">
         <span>© 2026 CosplayHub — Projeto educacional. Todos os direitos reservados.</span>
-        <span>Desenvolvido com <i class="bi bi-bootstrap-fill text-primary"></i> Bootstrap 5 + HTML5 · <a href="creditos.html" class="text-decoration-none" style="color:var(--ch-brand-soft)">Créditos</a></span>
+        <span>Desenvolvido por Raphael Pereira do Nascimento - <a href="creditos.html" class="text-decoration-none" style="color:var(--ch-brand-soft)">Mais detalhes</a></span>
       </div>
     </div>
   </footer>`;

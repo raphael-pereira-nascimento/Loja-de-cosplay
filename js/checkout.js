@@ -228,8 +228,8 @@ function simularBuscaCEP() {
   if (!document.getElementById("input-rua").value) {
     document.getElementById("input-rua").value = "Avenida dos Heróis";
     document.getElementById("input-bairro").value = "Vila Nerd";
-    document.getElementById("input-cidade").value = "São Paulo";
-    document.getElementById("input-uf").value = "SP";
+    document.getElementById("input-cidade").value = "Cuiabá";
+    document.getElementById("input-uf").value = "MT";
     showToast("Endereço preenchido automaticamente (simulação).", "info");
   }
 }
