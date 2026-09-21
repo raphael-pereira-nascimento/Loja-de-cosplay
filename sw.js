@@ -1,4 +1,4 @@
-const CACHE_NAME = "cosplayhub-v1";
+const CACHE_NAME = "cosplayhub-v3";
 const PAGINAS = [
   "index.html",
   "produtos.html",

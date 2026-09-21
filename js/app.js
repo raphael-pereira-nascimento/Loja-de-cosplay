@@ -233,7 +233,7 @@ function showToast(mensagem, variante = "success", opcoes = {}) {
     info: "bi-info-circle-fill text-info",
   };
   const btnHTML = opcoes.btn
-    ? `<a href="${escapeHTML(opcoes.btn.href)}" class="toast-action-btn" data-bs-dismiss="toast">${escapeHTML(opcoes.btn.texto)}</a>`
+    ? `<a href="${escapeHTML(opcoes.btn.href)}" class="toast-action-btn">${escapeHTML(opcoes.btn.texto)}</a>`
     : "";
   const el = document.createElement("div");
   el.className = "toast align-items-center border-subtle bg-surface-2";
@@ -326,6 +326,9 @@ function toggleFavBtn(btn, id) {
   icone.classList.toggle("bi-heart-fill", adicionou);
   icone.classList.toggle("bi-heart", !adicionou);
   showToast(adicionou ? "Adicionado aos favoritos!" : "Removido dos favoritos.", adicionou ? "success" : "info");
+  if (!adicionou && document.getElementById("grid-favoritos") && typeof renderFavoritos === "function") {
+    renderFavoritos();
+  }
 }
 
 function addFromCard(id) {
