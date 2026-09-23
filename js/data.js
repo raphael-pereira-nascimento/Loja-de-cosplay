@@ -910,8 +910,9 @@ const PRODUTOS = [
       "Cinto ajustável incluso",
     ],
     imagens: [
-      "https://loremflickr.com/800/1000/kimono,anime?lock=320",
-      "https://loremflickr.com/800/1000/cosplay,japan?lock=321",
+      "https://live.staticflickr.com/5578/14787278657_aa1c1b3c4a_b.jpg",
+      "https://live.staticflickr.com/3847/14970724521_4ed83b2403_b.jpg",
+      "https://live.staticflickr.com/3903/14973477392_a7eb085f15_b.jpg",
     ],
   },
   {
@@ -937,8 +938,9 @@ const PRODUTOS = [
       "Costura reforçada",
     ],
     imagens: [
-      "https://loremflickr.com/800/1000/cosplay,red?lock=330",
-      "https://loremflickr.com/800/1000/anime,costume?lock=331",
+      "https://live.staticflickr.com/3903/14973477392_a7eb085f15_b.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/9/90/Japanese_school_uniform_dsc06050.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/c/cc/Japanese_school_uniform_5.jpg",
     ],
   },
   {
@@ -964,8 +966,9 @@ const PRODUTOS = [
       "Botões metálicos",
     ],
     imagens: [
-      "https://loremflickr.com/800/1000/red,coat?lock=340",
-      "https://loremflickr.com/800/1000/cosplay,coat?lock=341",
+      "https://upload.wikimedia.org/wikipedia/commons/c/cc/Japanese_school_uniform_5.jpg",
+      "https://live.staticflickr.com/3922/14787145030_01a635d80b_b.jpg",
+      "https://live.staticflickr.com/5245/5337800379_4958bc0b14_b.jpg",
     ],
   },
   {
@@ -991,8 +994,9 @@ const PRODUTOS = [
       "Kit com 5 peças",
     ],
     imagens: [
-      "https://loremflickr.com/800/1000/ninja,costume?lock=350",
-      "https://loremflickr.com/800/1000/ninja,mask?lock=351",
+      "https://live.staticflickr.com/5245/5337800379_4958bc0b14_b.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/f/ff/Kuro-Shozoku-Ninja-Costume-at-Iga-Ninja-Museum.png",
+      "https://live.staticflickr.com/5578/14787278657_aa1c1b3c4a_b.jpg",
     ],
   },
   {
@@ -1018,8 +1022,9 @@ const PRODUTOS = [
       "Kit com 4 peças",
     ],
     imagens: [
-      "https://loremflickr.com/800/1000/school,uniform?lock=360",
-      "https://loremflickr.com/800/1000/sailor,costume?lock=361",
+      "https://live.staticflickr.com/5578/14787278657_aa1c1b3c4a_b.jpg",
+      "https://live.staticflickr.com/3847/14970724521_4ed83b2403_b.jpg",
+      "https://live.staticflickr.com/3903/14973477392_a7eb085f15_b.jpg",
     ],
   },
   {
@@ -1045,8 +1050,9 @@ const PRODUTOS = [
       "Forro interno acolchoado",
     ],
     imagens: [
-      "https://loremflickr.com/800/1000/hunter,coat?lock=370",
-      "https://loremflickr.com/800/1000/leather,coat?lock=371",
+      "https://live.staticflickr.com/5507/14234974055_c78ac44de2_b.jpg",
+      "https://live.staticflickr.com/4872/46375962411_4537df5a19_b.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/7/72/Star_Wars_Celebration_IV_-_Jedi_lightsaber_battle_fan_costumes_%284878898184%29.jpg",
     ],
   },
   {
@@ -1072,8 +1078,9 @@ const PRODUTOS = [
       "Tecido fluído premium",
     ],
     imagens: [
-      "https://loremflickr.com/800/1000/princess,dress?lock=380",
-      "https://loremflickr.com/800/1000/gala,dress?lock=381",
+      "https://upload.wikimedia.org/wikipedia/commons/7/72/Star_Wars_Celebration_IV_-_Jedi_lightsaber_battle_fan_costumes_%284878898184%29.jpg",
+      "https://live.staticflickr.com/6151/6188957269_ae29ebd5ee_b.jpg",
+      "https://live.staticflickr.com/4876/46313769042_4e7ea9d774_b.jpg",
     ],
   },
   {
@@ -1099,8 +1106,9 @@ const PRODUTOS = [
       "Kit com 3 peças",
     ],
     imagens: [
-      "https://loremflickr.com/800/1000/captain,uniform?lock=390",
-      "https://loremflickr.com/800/1000/space,uniform?lock=391",
+      "https://live.staticflickr.com/4876/46313769042_4e7ea9d774_b.jpg",
+      "https://live.staticflickr.com/65535/54359124362_c73059e7ab_b.jpg",
+      "https://live.staticflickr.com/3378/3327449616_33eb4083ef_b.jpg",
     ],
   },
   {
@@ -1126,8 +1134,9 @@ const PRODUTOS = [
       "Bolsa transversal inclusa",
     ],
     imagens: [
-      "https://loremflickr.com/800/1000/adventurer,hat?lock=400",
-      "https://loremflickr.com/800/1000/safari,jacket?lock=401",
+      "https://live.staticflickr.com/3378/3327449616_33eb4083ef_b.jpg",
+      "https://live.staticflickr.com/5507/14234974055_c78ac44de2_b.jpg",
+      "https://live.staticflickr.com/4872/46375962411_4537df5a19_b.jpg",
     ],
   },
   {
@@ -1153,8 +1162,9 @@ const PRODUTOS = [
       "Tecido encorpado",
     ],
     imagens: [
-      "https://loremflickr.com/800/1000/clown,horror?lock=410",
-      "https://loremflickr.com/800/1000/joker,costume?lock=411",
+      "https://live.staticflickr.com/4872/46375962411_4537df5a19_b.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/7/72/Star_Wars_Celebration_IV_-_Jedi_lightsaber_battle_fan_costumes_%284878898184%29.jpg",
+      "https://live.staticflickr.com/6151/6188957269_ae29ebd5ee_b.jpg",
     ],
   },
   {
@@ -1180,8 +1190,9 @@ const PRODUTOS = [
       "Braceletes + caneleiras",
     ],
     imagens: [
-      "https://loremflickr.com/800/1000/spartan,armor?lock=420",
-      "https://loremflickr.com/800/1000/warrior,helmet?lock=421",
+      "https://upload.wikimedia.org/wikipedia/commons/e/ee/LED_Costume_by_Beo_Beyond.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/7/73/Girl_in_cyber_costume_at_Katsucon_2013.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/1/1a/Cyberpunk_Girl.jpeg",
     ],
   },
   {
@@ -1207,8 +1218,9 @@ const PRODUTOS = [
       "Kit com 5 peças",
     ],
     imagens: [
-      "https://loremflickr.com/800/1000/assassin,hood?lock=430",
-      "https://loremflickr.com/800/1000/hooded,cloak?lock=431",
+      "https://upload.wikimedia.org/wikipedia/commons/1/1a/Cyberpunk_Girl.jpeg",
+      "https://live.staticflickr.com/2578/3789662155_da40f768d1_b.jpg",
+      "https://live.staticflickr.com/5473/10062428925_81bac218f6_b.jpg",
     ],
   },
   {
@@ -1234,8 +1246,9 @@ const PRODUTOS = [
       "Tecido moletom confortável",
     ],
     imagens: [
-      "https://loremflickr.com/800/1000/plumber,costume?lock=440",
-      "https://loremflickr.com/800/1000/mario,costume?lock=441",
+      "https://live.staticflickr.com/5473/10062428925_81bac218f6_b.jpg",
+      "https://live.staticflickr.com/1409/854344979_3ade2ea1df_b.jpg",
+      "https://live.staticflickr.com/1314/855199664_045daa271e_b.jpg",
     ],
   },
   {
@@ -1261,8 +1274,9 @@ const PRODUTOS = [
       "Patches bordados",
     ],
     imagens: [
-      "https://loremflickr.com/800/1000/tactical,vest?lock=450",
-      "https://loremflickr.com/800/1000/soldier,costume?lock=451",
+      "https://live.staticflickr.com/1314/855199664_045daa271e_b.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/e/ee/LED_Costume_by_Beo_Beyond.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/7/73/Girl_in_cyber_costume_at_Katsucon_2013.jpg",
     ],
   },
   {
@@ -1288,8 +1302,9 @@ const PRODUTOS = [
       "Acabamento dourado premium",
     ],
     imagens: [
-      "https://loremflickr.com/800/1000/paladin,armor?lock=460",
-      "https://loremflickr.com/800/1000/knight,gold?lock=461",
+      "https://upload.wikimedia.org/wikipedia/commons/7/73/Girl_in_cyber_costume_at_Katsucon_2013.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/1/1a/Cyberpunk_Girl.jpeg",
+      "https://live.staticflickr.com/2578/3789662155_da40f768d1_b.jpg",
     ],
   },
   {
@@ -1315,8 +1330,9 @@ const PRODUTOS = [
       "Solas antiderrapantes",
     ],
     imagens: [
-      "https://loremflickr.com/800/1000/spider,hero?lock=470",
-      "https://loremflickr.com/800/1000/superhero,suit?lock=471",
+      "https://live.staticflickr.com/8243/8639237614_cc84d1ab96_b.jpg",
+      "https://live.staticflickr.com/8383/8639237584_8c09a96f8a_b.jpg",
+      "https://live.staticflickr.com/3020/2290607758_99322fa338_b.jpg",
     ],
   },
   {
@@ -1342,8 +1358,9 @@ const PRODUTOS = [
       "Cinto utilitário",
     ],
     imagens: [
-      "https://loremflickr.com/800/1000/bat,hero?lock=480",
-      "https://loremflickr.com/800/1000/dark,knight?lock=481",
+      "https://live.staticflickr.com/3020/2290607758_99322fa338_b.jpg",
+      "https://live.staticflickr.com/3321/3516008114_bd54764cd1_b.jpg",
+      "https://live.staticflickr.com/8519/8638125491_39a52e41d6_b.jpg",
     ],
   },
   {
@@ -1369,8 +1386,9 @@ const PRODUTOS = [
       "Tecido dry-fit",
     ],
     imagens: [
-      "https://loremflickr.com/800/1000/shield,hero?lock=490",
-      "https://loremflickr.com/800/1000/captain,hero?lock=491",
+      "https://live.staticflickr.com/8519/8638125491_39a52e41d6_b.jpg",
+      "https://live.staticflickr.com/4056/4571419067_d41615deb2_b.jpg",
+      "https://live.staticflickr.com/8243/8639237614_cc84d1ab96_b.jpg",
     ],
   },
   {
@@ -1396,8 +1414,9 @@ const PRODUTOS = [
       "Tênis esportivo incluso",
     ],
     imagens: [
-      "https://loremflickr.com/800/1000/speedster,hero?lock=500",
-      "https://loremflickr.com/800/1000/flash,hero?lock=501",
+      "https://live.staticflickr.com/8243/8639237614_cc84d1ab96_b.jpg",
+      "https://live.staticflickr.com/8383/8639237584_8c09a96f8a_b.jpg",
+      "https://live.staticflickr.com/3020/2290607758_99322fa338_b.jpg",
     ],
   },
   {
@@ -1423,8 +1442,9 @@ const PRODUTOS = [
       "Saia plissada com shorts",
     ],
     imagens: [
-      "https://loremflickr.com/800/1000/amazon,warrior?lock=510",
-      "https://loremflickr.com/800/1000/warrior,princess?lock=511",
+      "https://live.staticflickr.com/3020/2290607758_99322fa338_b.jpg",
+      "https://live.staticflickr.com/3321/3516008114_bd54764cd1_b.jpg",
+      "https://live.staticflickr.com/8519/8638125491_39a52e41d6_b.jpg",
     ],
   },
   {
@@ -1450,8 +1470,9 @@ const PRODUTOS = [
       "Cinturão de corda",
     ],
     imagens: [
-      "https://loremflickr.com/800/1000/wizard,robe?lock=520",
-      "https://loremflickr.com/800/1000/mage,staff?lock=521",
+      "https://live.staticflickr.com/2889/10320226203_ed65e06fac_b.jpg",
+      "https://live.staticflickr.com/3002/2938707468_9bb6ea8fc1_b.jpg",
+      "https://live.staticflickr.com/3726/9534915722_4148ebd3e0_b.jpg",
     ],
   },
   {
@@ -1477,8 +1498,9 @@ const PRODUTOS = [
       "Capa com capuz",
     ],
     imagens: [
-      "https://loremflickr.com/800/1000/elf,dress?lock=530",
-      "https://loremflickr.com/800/1000/fairy,costume?lock=531",
+      "https://live.staticflickr.com/3726/9534915722_4148ebd3e0_b.jpg",
+      "https://live.staticflickr.com/5485/9534916080_fb38831884_b.jpg",
+      "https://live.staticflickr.com/242/518120820_5e021d4954_b.jpg",
     ],
   },
   {
@@ -1504,8 +1526,9 @@ const PRODUTOS = [
       "Ombreiras articuladas",
     ],
     imagens: [
-      "https://loremflickr.com/800/1000/guard,armor?lock=540",
-      "https://loremflickr.com/800/1000/royal,guard?lock=541",
+      "https://live.staticflickr.com/242/518120820_5e021d4954_b.jpg",
+      "https://live.staticflickr.com/2398/1849512851_1435bbecea_b.jpg",
+      "https://live.staticflickr.com/2926/14411871202_3fc7500a66_b.jpg",
     ],
   },
   {
@@ -1531,8 +1554,9 @@ const PRODUTOS = [
       "Calça bufante",
     ],
     imagens: [
-      "https://loremflickr.com/800/1000/bard,costume?lock=550",
-      "https://loremflickr.com/800/1000/minstrel,hat?lock=551",
+      "https://live.staticflickr.com/2926/14411871202_3fc7500a66_b.jpg",
+      "https://live.staticflickr.com/65535/49350370803_2402546290_b.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/7/7b/Hooded_Cloaks_of_Bandon_-_geograph.org.uk_-_2386474.jpg",
     ],
   },
   {
@@ -1558,8 +1582,9 @@ const PRODUTOS = [
       "Luvas de veludo",
     ],
     imagens: [
-      "https://loremflickr.com/800/1000/king,cape?lock=560",
-      "https://loremflickr.com/800/1000/dark,crown?lock=561",
+      "https://upload.wikimedia.org/wikipedia/commons/7/7b/Hooded_Cloaks_of_Bandon_-_geograph.org.uk_-_2386474.jpg",
+      "https://live.staticflickr.com/2889/10320226203_ed65e06fac_b.jpg",
+      "https://live.staticflickr.com/3002/2938707468_9bb6ea8fc1_b.jpg",
     ],
   },
   {
@@ -1585,8 +1610,9 @@ const PRODUTOS = [
       "Etiquetas rúnicas",
     ],
     imagens: [
-      "https://loremflickr.com/800/1000/potion,flask?lock=570",
-      "https://loremflickr.com/800/1000/magic,potion?lock=571",
+      "https://live.staticflickr.com/8266/29645615526_935b3283dc_b.jpg",
+      "https://live.staticflickr.com/3728/9885787776_555ba68ee2_b.jpg",
+      "https://live.staticflickr.com/5176/5500387788_24a96c7483_b.jpg",
     ],
   },
   {
@@ -1612,8 +1638,9 @@ const PRODUTOS = [
       "Guia de uso incluso",
     ],
     imagens: [
-      "https://loremflickr.com/800/1000/lens,eye?lock=580",
-      "https://loremflickr.com/800/1000/red,eye?lock=581",
+      "https://live.staticflickr.com/5176/5500387788_24a96c7483_b.jpg",
+      "https://live.staticflickr.com/7334/16405813122_7edbb3d50b_b.jpg",
+      "https://live.staticflickr.com/3454/3885315586_7fb51dd058_b.jpg",
     ],
   },
   {
@@ -1639,8 +1666,9 @@ const PRODUTOS = [
       "Engrenagens em bronze",
     ],
     imagens: [
-      "https://loremflickr.com/800/1000/steampunk,belt?lock=590",
-      "https://loremflickr.com/800/1000/gears,brass?lock=591",
+      "https://live.staticflickr.com/3454/3885315586_7fb51dd058_b.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/0/08/Chicago_Pride_Parade_2012_Pink_Wig_%2814133780599%29.jpg",
+      "https://live.staticflickr.com/778/23027656091_d2d40b982a_b.jpg",
     ],
   },
   {
@@ -1666,8 +1694,9 @@ const PRODUTOS = [
       "Pintura prateada premium",
     ],
     imagens: [
-      "https://loremflickr.com/800/1000/sword,foam?lock=600",
-      "https://loremflickr.com/800/1000/larp,sword?lock=601",
+      "https://live.staticflickr.com/778/23027656091_d2d40b982a_b.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/0/0f/Medieval_Crown_of_Bulgaria.jpg",
+      "https://live.staticflickr.com/8266/29645615526_935b3283dc_b.jpg",
     ],
   },
   {
@@ -1693,8 +1722,9 @@ const PRODUTOS = [
       "Caderno de campanha",
     ],
     imagens: [
-      "https://loremflickr.com/800/1000/dice,rpg?lock=610",
-      "https://loremflickr.com/800/1000/dnd,dice?lock=611",
+      "https://live.staticflickr.com/8266/29645615526_935b3283dc_b.jpg",
+      "https://live.staticflickr.com/3728/9885787776_555ba68ee2_b.jpg",
+      "https://live.staticflickr.com/5176/5500387788_24a96c7483_b.jpg",
     ],
   },
 ];
