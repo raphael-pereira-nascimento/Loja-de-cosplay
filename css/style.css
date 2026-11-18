@@ -539,6 +539,13 @@ body {
   border-radius: 1rem;
 }
 .summary-box.sticky-top-2 { top: 92px; }
+/* Impede que nomes longos e preços transbordem o resumo do checkout */
+#mini-itens .mini-item,
+#mini-itens .mini-item-info { min-width: 0; }
+#mini-itens .mini-item-preco { flex-shrink: 0; white-space: nowrap; }
+#mini-itens img { flex-shrink: 0; max-width: 52px; }
+.summary-box .d-flex.justify-content-between > * { min-width: 0; }
+#ck-total { white-space: nowrap; }
 .qty-input { max-width: 130px; }
 .qty-input .form-control { text-align: center; }
 

@@ -92,8 +92,8 @@ function wireNavegacao() {
 function irParaEtapa(destino) {
   if (destino > estado.etapa && !validarEtapa(estado.etapa)) return;
 
-  if (destino === 1 && estado.etapa === 1) {
-    estado.telefone = document.getElementById("input-telefone").value;
+  if (estado.etapa === 1 && destino > 1) {
+    estado.telefone = document.getElementById("input-telefone").value.trim();
   }
   if (destino === 3 && estado.etapa === 2) {
     capturarEndereco();
@@ -135,7 +135,8 @@ function validarEtapa(etapa) {
     const telefone = document.getElementById("input-telefone");
     const ok = /^\(\d{2}\) \d{5}-\d{4}$/.test(telefone.value.trim());
     telefone.classList.toggle("is-invalid", !ok);
-    if (!ok) showToast("Informe um telefone válido com DDD.", "warning");
+    if (ok) estado.telefone = telefone.value.trim();
+    else showToast("Informe um telefone válido com DDD.", "warning");
     return ok;
   }
 
@@ -250,12 +251,14 @@ function wireOpcoes() {
       if (estado.pagamento === "cartao" && estado.parcelas === 1) estado.parcelas = 1;
       alternarBoxPagamento();
       atualizarResumo();
+      if (estado.etapa === 3) renderRevisao();
     })
   );
 
   document.getElementById("cartao-parcelas").addEventListener("change", (e) => {
     estado.parcelas = Number(e.target.value);
     atualizarResumo();
+    if (estado.etapa === 3) renderRevisao();
   });
 }
 
@@ -318,15 +321,15 @@ function renderMiniItens() {
   document.getElementById("mini-itens").innerHTML = itens
     .map(
       (p) => `
-    <div class="d-flex gap-3 align-items-center">
+    <div class="d-flex gap-3 align-items-center mini-item">
       <img src="${imagemPrincipal(p)}" alt="${p.nome}" width="52" height="64"
-        class="rounded-3 border-subtle" style="object-fit:cover"
+        class="rounded-3 border-subtle flex-shrink-0" style="object-fit:cover"
         onerror="this.onerror=null;this.src='${fallbackImagem(p.id + "-ck")}'">
-      <div class="flex-grow-1 small">
+      <div class="flex-grow-1 small mini-item-info">
         <strong class="d-block text-truncate">${p.nome}</strong>
-        <span class="text-muted-2">${p.qty}x · Tam: ${p.tamanho}</span>
+        <span class="text-muted-2 d-block text-truncate">${p.qty}x · Tam: ${p.tamanho}</span>
       </div>
-      <strong class="small">${brl(p.linhaTotal)}</strong>
+      <strong class="small text-nowrap flex-shrink-0 mini-item-preco">${brl(p.linhaTotal)}</strong>
     </div>`
     )
     .join("");
@@ -369,10 +372,11 @@ function atualizarResumo() {
 
   document.querySelectorAll("[data-preco-frete]").forEach((el) => {
     const codigo = el.dataset.precoFrete;
+    const valor = FRETE_OPCOES[codigo].valor;
     el.innerHTML =
       codigo !== "retirada" && v.freteGratisAplicado
-        ? '<span class="text-success">GRÁTIS</span>'
-        : brl(FRETE_OPCOES[codigo].valor);
+        ? `<s class="text-muted-2 small me-1">${brl(valor)}</s><span class="text-success">GRÁTIS</span>`
+        : brl(valor);
   });
 
   document.getElementById("ck-subtotal").textContent = brl(v.subtotal);
@@ -437,6 +441,7 @@ function confirmarPedido() {
   const sessao = getSession();
   const opcaoFrete = FRETE_OPCOES[estado.frete];
   const agora = new Date();
+  const pagamentoAprovado = estado.pagamento !== "boleto";
 
   const pedido = {
     numero: "CH" + String(Date.now()).slice(-8),
@@ -449,7 +454,9 @@ function confirmarPedido() {
     pagamento: {
       metodo: estado.pagamento,
       parcelas: estado.pagamento === "cartao" ? estado.parcelas : 1,
+      status: pagamentoAprovado ? "aprovado" : "pendente",
     },
+    status: pagamentoAprovado ? "confirmado" : "aguardando_pagamento",
     valores: {
       subtotal: v.subtotal,
       descontoCupom: v.descontoCupom,
@@ -476,7 +483,7 @@ function confirmarPedido() {
     <div class="row g-3 text-start small">
       <div class="col-sm-6"><span class="text-muted-2 d-block">Número do pedido</span><strong class="fs-6 font-display">${pedido.numero}</strong></div>
       <div class="col-sm-6"><span class="text-muted-2 d-block">Data</span><strong>${agora.toLocaleString("pt-BR")}</strong></div>
-      <div class="col-sm-6"><span class="text-muted-2 d-block">Pagamento</span><strong>${pedido.pagamento.metodo.toUpperCase()}${pedido.pagamento.metodo === "cartao" ? ` · ${pedido.pagamento.parcelas}x` : ""}</strong></div>
+      <div class="col-sm-6"><span class="text-muted-2 d-block">Pagamento</span><strong>${pedido.pagamento.metodo.toUpperCase()}${pedido.pagamento.metodo === "cartao" ? ` · ${pedido.pagamento.parcelas}x` : ""}</strong><br><small class="${pagamentoAprovado ? "text-success" : "text-warning"}">${pagamentoAprovado ? "Aprovado · pedido confirmado" : "Aguardando pagamento"}</small></div>
       <div class="col-sm-6"><span class="text-muted-2 d-block">Total pago</span><strong class="fs-6 text-success">${brl(pedido.valores.total)}</strong></div>
       <div class="col-12"><span class="text-muted-2 d-block">Entrega prevista</span><strong>${opcaoFrete.prazo} · ${pedido.endereco.cidade}/${pedido.endereco.uf}</strong></div>
     </div>`;

@@ -27,13 +27,18 @@ function renderPedidos() {
   aplicarReveals();
 }
 
-function statusPedido(dataIso) {
-  const dias = (Date.now() - new Date(dataIso)) / 86400000;
+function statusPedido(p) {
+  const dias = (Date.now() - new Date(p.data)) / 86400000;
+  const statusPagamento = p.pagamento && p.pagamento.status;
+
+  if (statusPagamento === "pendente" || p.status === "aguardando_pagamento") {
+    return { label: "Aguardando pagamento", cor: "warning", icone: "bi-hourglass-split" };
+  }
   if (dias >= 7) return { label: "Entregue", cor: "success", icone: "bi-house-check-fill" };
   if (dias >= 5) return { label: "Em trânsito", cor: "info", icone: "bi-truck" };
   if (dias >= 3) return { label: "Enviado", cor: "primary", icone: "bi-send-fill" };
   if (dias >= 2) return { label: "Em separação", cor: "warning", icone: "bi-boxes" };
-  return { label: "Pagamento aprovado", cor: "success", icone: "bi-check-circle-fill" };
+  return { label: "Confirmado", cor: "success", icone: "bi-check-circle-fill" };
 }
 
 /* ---------------- Rastreamento simulado ---------------- */
@@ -49,10 +54,19 @@ const ETAPAS_RASTREIO = [
 
 function timelineHTML(p) {
   const dias = (Date.now() - new Date(p.data)) / 86400000;
+  const pago = p.status !== "aguardando_pagamento" &&
+    (!p.pagamento || p.pagamento.status !== "pendente");
 
   let atualMarcada = false;
   const itens = ETAPAS_RASTREIO.map((etapa, i) => {
-    const feito = [true, dias >= 0.02, dias >= 2, dias >= 3, dias >= 5, dias >= 7][i];
+    const feito = [
+      true,
+      pago,
+      pago && dias >= 2,
+      pago && dias >= 3,
+      pago && dias >= 5,
+      pago && dias >= 7,
+    ][i];
     let estado;
     if (feito) {
       estado = "done";
@@ -87,7 +101,7 @@ function timelineHTML(p) {
 }
 
 function pedidoCardHTML(p) {
-  const status = statusPedido(p.data);
+  const status = statusPedido(p);
   const data = new Date(p.data).toLocaleString("pt-BR");
   const metodo =
     p.pagamento.metodo === "cartao"
@@ -119,12 +133,12 @@ function pedidoCardHTML(p) {
     </header>
 
     <div class="p-4">
-      <div class="row g-3">
+      <div class="d-flex flex-column gap-3">
         ${p.itens
           .map((item) => {
             const produto = buscarProduto(item.id);
             return `
-          <div class="col-md-6 col-xl-4">
+          <div>
             <div class="d-flex gap-3 align-items-center">
               ${
                 produto
