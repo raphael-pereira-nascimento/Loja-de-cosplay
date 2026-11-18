@@ -30,6 +30,7 @@ function renderPedidos() {
 function pagamentoAprovado(pedido) {
   const pagamento = pedido.pagamento || {};
   if (pagamento.status) return pagamento.status === "aprovado";
+  if (pedido.status) return pedido.status !== "aguardando_pagamento";
   // Pedidos antigos não guardavam o status: boleto fica pendente.
   return pagamento.metodo !== "boleto";
 }
@@ -44,7 +45,7 @@ function statusPedido(pedido) {
   if (dias >= 5) return { label: "Em trânsito", cor: "info", icone: "bi-truck" };
   if (dias >= 3) return { label: "Enviado", cor: "primary", icone: "bi-send-fill" };
   if (dias >= 2) return { label: "Em separação", cor: "warning", icone: "bi-boxes" };
-  return { label: "Pagamento aprovado", cor: "success", icone: "bi-check-circle-fill" };
+  return { label: "Confirmado", cor: "success", icone: "bi-check-circle-fill" };
 }
 
 /* ---------------- Rastreamento simulado ---------------- */

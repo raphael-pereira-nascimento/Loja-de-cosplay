@@ -150,7 +150,8 @@ function validarEtapa(etapa) {
     const telefone = document.getElementById("input-telefone");
     const ok = /^\(\d{2}\) \d{5}-\d{4}$/.test(telefone.value.trim());
     telefone.classList.toggle("is-invalid", !ok);
-    if (!ok) showToast("Informe um telefone válido com DDD.", "warning");
+    if (ok) estado.telefone = telefone.value.trim();
+    else showToast("Informe um telefone válido com DDD.", "warning");
     return ok;
   }
 
@@ -401,10 +402,15 @@ function atualizarResumo() {
 
   document.querySelectorAll("[data-preco-frete]").forEach((el) => {
     const codigo = el.dataset.precoFrete;
-    const gratis = codigo === "retirada" || v.freteGratisAplicado;
-    el.innerHTML = gratis
-      ? '<span class="text-success">GRÁTIS</span>'
-      : brl(FRETE_OPCOES[codigo].valor);
+    const valor = FRETE_OPCOES[codigo].valor;
+    if (codigo === "retirada") {
+      el.innerHTML = '<span class="text-success">GRÁTIS</span>';
+    } else if (v.freteGratisAplicado) {
+      // Mostra o valor original riscado para deixar claro o benefício do frete grátis.
+      el.innerHTML = `<s class="text-muted-2 small me-1">${brl(valor)}</s><span class="text-success">GRÁTIS</span>`;
+    } else {
+      el.innerHTML = brl(valor);
+    }
   });
 
   document.getElementById("ck-subtotal").textContent = brl(v.subtotal);
@@ -486,6 +492,7 @@ function confirmarPedido() {
       status: estado.pagamento === "boleto" ? "pendente" : "aprovado",
       aprovadoEm: estado.pagamento === "boleto" ? null : agora.toISOString(),
     },
+    status: estado.pagamento === "boleto" ? "aguardando_pagamento" : "confirmado",
     valores: {
       subtotal: v.subtotal,
       descontoCupom: v.descontoCupom,
@@ -508,13 +515,18 @@ function confirmarPedido() {
   clearCart();
   localStorage.removeItem(KEYS.coupon);
 
+  const aprovado = pedido.pagamento.status === "aprovado";
   document.getElementById("resumo-sucesso").innerHTML = `
     <div class="row g-3 text-start small">
       <div class="col-sm-6"><span class="text-muted-2 d-block">Número do pedido</span><strong class="fs-6 font-display">${pedido.numero}</strong></div>
       <div class="col-sm-6"><span class="text-muted-2 d-block">Data</span><strong>${agora.toLocaleString("pt-BR")}</strong></div>
-      <div class="col-sm-6"><span class="text-muted-2 d-block">Pagamento</span><strong>${pedido.pagamento.metodo.toUpperCase()}${pedido.pagamento.metodo === "cartao" ? ` · ${pedido.pagamento.parcelas}x` : ""}</strong></div>
+      <div class="col-sm-6">
+        <span class="text-muted-2 d-block">Pagamento</span>
+        <strong>${pedido.pagamento.metodo.toUpperCase()}${pedido.pagamento.metodo === "cartao" ? ` · ${pedido.pagamento.parcelas}x` : ""}</strong><br>
+        <small class="${aprovado ? "text-success" : "text-warning"}">${aprovado ? "Aprovado · pedido confirmado" : "Aguardando pagamento"}</small>
+      </div>
       <div class="col-sm-6"><span class="text-muted-2 d-block">Total pago</span><strong class="fs-6 text-success">${brl(pedido.valores.total)}</strong></div>
-      <div class="col-sm-6"><span class="text-muted-2 d-block">Status</span><strong class="${pedido.pagamento.status === "aprovado" ? "text-success" : "text-warning"}">${pedido.pagamento.status === "aprovado" ? "Pagamento aprovado" : "Aguardando pagamento"}</strong></div>
+      <div class="col-sm-6"><span class="text-muted-2 d-block">Status</span><strong class="${aprovado ? "text-success" : "text-warning"}">${aprovado ? "Pedido confirmado" : "Aguardando pagamento"}</strong></div>
       <div class="col-sm-6"><span class="text-muted-2 d-block">Telefone</span><strong>${pedido.cliente.telefone || "—"}</strong></div>
       <div class="col-12"><span class="text-muted-2 d-block">Entrega prevista</span><strong>${opcaoFrete.prazo} · ${pedido.endereco.cidade}/${pedido.endereco.uf}</strong></div>
     </div>`;

@@ -569,6 +569,8 @@ body {
 }
 .ship-label { min-width: 0; }
 .ship-price { white-space: nowrap; flex-shrink: 0; }
+.summary-box .d-flex.justify-content-between > * { min-width: 0; }
+#ck-total { white-space: nowrap; }
 
 .qty-input { max-width: 130px; }
 .qty-input .form-control { text-align: center; }
