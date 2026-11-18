@@ -27,8 +27,19 @@ function renderPedidos() {
   aplicarReveals();
 }
 
-function statusPedido(dataIso) {
-  const dias = (Date.now() - new Date(dataIso)) / 86400000;
+function pagamentoAprovado(pedido) {
+  const pagamento = pedido.pagamento || {};
+  if (pagamento.status) return pagamento.status === "aprovado";
+  // Pedidos antigos não guardavam o status: boleto fica pendente.
+  return pagamento.metodo !== "boleto";
+}
+
+function statusPedido(pedido) {
+  const dias = (Date.now() - new Date(pedido.data)) / 86400000;
+
+  if (!pagamentoAprovado(pedido)) {
+    return { label: "Aguardando pagamento", cor: "warning", icone: "bi-hourglass-split" };
+  }
   if (dias >= 7) return { label: "Entregue", cor: "success", icone: "bi-house-check-fill" };
   if (dias >= 5) return { label: "Em trânsito", cor: "info", icone: "bi-truck" };
   if (dias >= 3) return { label: "Enviado", cor: "primary", icone: "bi-send-fill" };
@@ -49,10 +60,14 @@ const ETAPAS_RASTREIO = [
 
 function timelineHTML(p) {
   const dias = (Date.now() - new Date(p.data)) / 86400000;
+  const aprovado = pagamentoAprovado(p);
+
+  // O pedido nasce confirmado e, para Pix/cartão, com o pagamento aprovado.
+  const marcos = [true, aprovado, aprovado && dias >= 2, aprovado && dias >= 3, aprovado && dias >= 5, aprovado && dias >= 7];
 
   let atualMarcada = false;
   const itens = ETAPAS_RASTREIO.map((etapa, i) => {
-    const feito = [true, dias >= 0.02, dias >= 2, dias >= 3, dias >= 5, dias >= 7][i];
+    const feito = marcos[i];
     let estado;
     if (feito) {
       estado = "done";
@@ -87,12 +102,16 @@ function timelineHTML(p) {
 }
 
 function pedidoCardHTML(p) {
-  const status = statusPedido(p.data);
+  const status = statusPedido(p);
   const data = new Date(p.data).toLocaleString("pt-BR");
+  const pagamento = p.pagamento || {};
   const metodo =
-    p.pagamento.metodo === "cartao"
-      ? `Cartão · ${p.pagamento.parcelas}x`
-      : p.pagamento.metodo.toUpperCase();
+    pagamento.metodo === "cartao"
+      ? `Cartão · ${pagamento.parcelas}x`
+      : String(pagamento.metodo || "—").toUpperCase();
+  const aprovado = pagamentoAprovado(p);
+  const endereco = p.endereco || {};
+  const entrega = p.entrega || {};
 
   return `
   <article class="filter-card overflow-hidden">
@@ -118,26 +137,35 @@ function pedidoCardHTML(p) {
       </span>
     </header>
 
+    <div class="px-4 pt-3 small">
+      <span class="${aprovado ? "text-success" : "text-warning"}">
+        <i class="bi ${aprovado ? "bi-check-circle-fill" : "bi-hourglass-split"} me-1"></i>
+        ${aprovado ? "Pagamento aprovado e pedido confirmado" : "Aguardando confirmação do pagamento"}
+      </span>
+    </div>
+
     <div class="p-4">
       <div class="row g-3">
         ${p.itens
           .map((item) => {
             const produto = buscarProduto(item.id);
+            const precoItem = Number(item.preco) || 0;
             return `
-          <div class="col-md-6 col-xl-4">
-            <div class="d-flex gap-3 align-items-center">
+          <div class="col-12">
+            <div class="order-line">
               ${
                 produto
-                  ? `<a href="informacoes-produto.html?id=${item.id}"><img src="${imagemPrincipal(produto)}"
-                      alt="${item.nome}" width="52" height="64" class="rounded-3 border-subtle"
-                      style="object-fit:cover" loading="lazy"
+                  ? `<a href="informacoes-produto.html?id=${item.id}" class="flex-shrink-0"><img src="${imagemPrincipal(produto)}"
+                      alt="${item.nome}" width="52" height="64" class="order-line-thumb"
+                      loading="lazy"
                       onerror="this.onerror=null;this.src='${fallbackImagem(item.id + "-pd")}'"></a>`
                   : ""
               }
-              <div class="small flex-grow-1">
-                <strong class="d-block text-truncate">${item.nome}</strong>
-                <span class="text-muted-2">${item.qty}x · Tam: ${item.tamanho}</span>
+              <div class="order-line-info small">
+                <strong class="order-line-name d-block text-truncate" title="${item.nome}">${item.nome}</strong>
+                <span class="text-muted-2">${item.qty}x · Tam: ${item.tamanho} · ${brl(precoItem)} cada</span>
               </div>
+              <strong class="order-line-price small">${brl(precoItem * item.qty)}</strong>
             </div>
           </div>`;
           })
@@ -146,9 +174,9 @@ function pedidoCardHTML(p) {
 
       <div class="small text-muted-2 mt-3 pt-3 border-top border-subtle">
         <i class="bi bi-geo-alt me-1"></i>
-        Entrega para: ${p.endereco.rua}, ${p.endereco.numero}${p.endereco.complemento ? " — " + p.endereco.complemento : ""}
-        · ${p.endereco.bairro}, ${p.endereco.cidade}/${p.endereco.uf}
-        · Prazo: ${p.entrega.prazo}
+        Entrega para: ${endereco.rua}, ${endereco.numero}${endereco.complemento ? " — " + endereco.complemento : ""}
+        · ${endereco.bairro}, ${endereco.cidade}/${endereco.uf}
+        · Prazo: ${entrega.prazo || "a confirmar"}
       </div>
 
       <button class="btn btn-outline-brand btn-sm tracking-toggle mt-3" type="button"

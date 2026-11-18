@@ -75,6 +75,22 @@ function preencherUsuario() {
   document.getElementById("avatar-usuario").textContent = iniciais;
   document.getElementById("nome-usuario").textContent = sessao.nome;
   document.getElementById("email-usuario").textContent = sessao.email;
+
+  // Aproveita o telefone cadastrado na conta, se existir.
+  const usuario = getUsers().find((u) => u.id === sessao.id);
+  const telefone = document.getElementById("input-telefone");
+  if (usuario && usuario.telefone && !telefone.value) {
+    telefone.value = formatarTelefone(usuario.telefone);
+    estado.telefone = telefone.value;
+  }
+}
+
+function formatarTelefone(valor) {
+  let v = String(valor).replace(/\D/g, "").slice(0, 11);
+  if (v.length > 6) v = `(${v.slice(0, 2)}) ${v.slice(2, v.length > 10 ? 7 : 6)}-${v.slice(v.length > 10 ? 7 : 6)}`;
+  else if (v.length > 2) v = `(${v.slice(0, 2)}) ${v.slice(2)}`;
+  else if (v.length > 0) v = `(${v}`;
+  return v;
 }
 
 /* ---------------- Navegação entre etapas ---------------- */
@@ -92,9 +108,8 @@ function wireNavegacao() {
 function irParaEtapa(destino) {
   if (destino > estado.etapa && !validarEtapa(estado.etapa)) return;
 
-  if (destino === 1 && estado.etapa === 1) {
-    estado.telefone = document.getElementById("input-telefone").value;
-  }
+  // Guarda o telefone ao sair da etapa de identificação.
+  if (estado.etapa === 1) capturarTelefone();
   if (destino === 3 && estado.etapa === 2) {
     capturarEndereco();
   }
@@ -163,6 +178,10 @@ function validarEtapa(etapa) {
   return true;
 }
 
+function capturarTelefone() {
+  estado.telefone = document.getElementById("input-telefone").value.trim();
+}
+
 function capturarEndereco() {
   estado.endereco = {
     cep: document.getElementById("input-cep").value,
@@ -180,11 +199,7 @@ function capturarEndereco() {
 function wireMascaras() {
   const telefone = document.getElementById("input-telefone");
   telefone.addEventListener("input", () => {
-    let v = telefone.value.replace(/\D/g, "").slice(0, 11);
-    if (v.length > 6) v = `(${v.slice(0, 2)}) ${v.slice(2, v.length > 10 ? 7 : 6)}-${v.slice(v.length > 10 ? 7 : 6)}`;
-    else if (v.length > 2) v = `(${v.slice(0, 2)}) ${v.slice(2)}`;
-    else if (v.length > 0) v = `(${v}`;
-    telefone.value = v;
+    telefone.value = formatarTelefone(telefone.value);
   });
 
   const cep = document.getElementById("input-cep");
@@ -240,23 +255,28 @@ function wireOpcoes() {
   document.querySelectorAll('input[name="frete"]').forEach((radio) =>
     radio.addEventListener("change", () => {
       estado.frete = radio.value;
-      atualizarResumo();
+      atualizarTudo();
     })
   );
 
   document.querySelectorAll('input[name="pagamento"]').forEach((radio) =>
     radio.addEventListener("change", () => {
       estado.pagamento = radio.value;
-      if (estado.pagamento === "cartao" && estado.parcelas === 1) estado.parcelas = 1;
       alternarBoxPagamento();
-      atualizarResumo();
+      atualizarTudo();
     })
   );
 
   document.getElementById("cartao-parcelas").addEventListener("change", (e) => {
     estado.parcelas = Number(e.target.value);
-    atualizarResumo();
+    atualizarTudo();
   });
+}
+
+function atualizarTudo() {
+  atualizarResumo();
+  // Mantém a revisão do pedido sincronizada com as escolhas do cliente.
+  if (estado.etapa === 3) renderRevisao();
 }
 
 function alternarBoxPagamento() {
@@ -270,9 +290,7 @@ function montarParcelas() {
   select.innerHTML = Array.from({ length: 12 }, (_, i) => {
     const n = i + 1;
     const semJuros = n <= 3;
-    return `<option value="${n}" ${n === 1 ? "selected" : ""}>
-      ${n}x de <span data-parcela="${n}"></span> ${semJuros ? "(sem juros)" : "(com juros)"}
-    </option>`;
+    return `<option value="${n}" ${n === 1 ? "selected" : ""}>${n}x ${semJuros ? "(sem juros)" : "(com juros)"}</option>`;
   }).join("");
 }
 
@@ -318,15 +336,15 @@ function renderMiniItens() {
   document.getElementById("mini-itens").innerHTML = itens
     .map(
       (p) => `
-    <div class="d-flex gap-3 align-items-center">
+    <div class="order-line">
       <img src="${imagemPrincipal(p)}" alt="${p.nome}" width="52" height="64"
-        class="rounded-3 border-subtle" style="object-fit:cover"
+        class="order-line-thumb" loading="lazy"
         onerror="this.onerror=null;this.src='${fallbackImagem(p.id + "-ck")}'">
-      <div class="flex-grow-1 small">
-        <strong class="d-block text-truncate">${p.nome}</strong>
+      <div class="order-line-info small">
+        <strong class="order-line-name d-block text-truncate" title="${p.nome}">${p.nome}</strong>
         <span class="text-muted-2">${p.qty}x · Tam: ${p.tamanho}</span>
       </div>
-      <strong class="small">${brl(p.linhaTotal)}</strong>
+      <strong class="order-line-price small">${brl(p.linhaTotal)}</strong>
     </div>`
     )
     .join("");
@@ -335,15 +353,25 @@ function renderMiniItens() {
 function renderRevisao() {
   const box = document.getElementById("box-revisao");
   const opcaoFrete = FRETE_OPCOES[estado.frete];
+  const { valorFrete } = calcularValores();
 
-  const metodoLabel = { pix: "Pix (5% OFF)", cartao: `Cartão de crédito (${estado.parcelas}x)`, boleto: "Boleto bancário" };
+  const metodoLabel = {
+    pix: "Pix (5% OFF)",
+    cartao: `Cartão de crédito (${estado.parcelas}x)`,
+    boleto: "Boleto bancário",
+  };
+  const sessao = getSession();
   const e = estado.endereco;
 
   box.innerHTML = `
     <div class="row g-4 small">
       <div class="col-md-6">
         <p class="fw-bold mb-1"><i class="bi bi-person me-1"></i>Cliente</p>
-        <p class="text-muted-2 mb-0">${getSession().nome}<br>${estado.telefone || "(telefone não informado)"}</p>
+        <p class="text-muted-2 mb-0">
+          ${sessao.nome}<br>
+          ${sessao.email}<br>
+          <span class="text-body"><i class="bi bi-whatsapp me-1"></i>${estado.telefone || "(telefone não informado)"}</span>
+        </p>
       </div>
       <div class="col-md-6">
         <p class="fw-bold mb-1"><i class="bi bi-truck me-1"></i>Entrega — ${opcaoFrete.label}</p>
@@ -354,7 +382,11 @@ function renderRevisao() {
       </div>
       <div class="col-md-6">
         <p class="fw-bold mb-1"><i class="bi bi-credit-card me-1"></i>Pagamento</p>
-        <p class="text-muted-2 mb-0">${metodoLabel[estado.pagamento]}</p>
+        <p class="text-muted-2 mb-0">${metodoLabel[estado.pagamento] || "Selecione uma forma de pagamento"}</p>
+      </div>
+      <div class="col-md-6">
+        <p class="fw-bold mb-1"><i class="bi bi-box-seam me-1"></i>Frete</p>
+        <p class="text-muted-2 mb-0">${valorFrete === 0 ? "Grátis" : brl(valorFrete)}</p>
       </div>
       <div class="col-md-6">
         <p class="fw-bold mb-1"><i class="bi bi-clock-history me-1"></i>Prazo estimado</p>
@@ -369,10 +401,10 @@ function atualizarResumo() {
 
   document.querySelectorAll("[data-preco-frete]").forEach((el) => {
     const codigo = el.dataset.precoFrete;
-    el.innerHTML =
-      codigo !== "retirada" && v.freteGratisAplicado
-        ? '<span class="text-success">GRÁTIS</span>'
-        : brl(FRETE_OPCOES[codigo].valor);
+    const gratis = codigo === "retirada" || v.freteGratisAplicado;
+    el.innerHTML = gratis
+      ? '<span class="text-success">GRÁTIS</span>'
+      : brl(FRETE_OPCOES[codigo].valor);
   });
 
   document.getElementById("ck-subtotal").textContent = brl(v.subtotal);
@@ -420,7 +452,8 @@ function atualizarOpcoesParcelas(baseSemJuros) {
   document.querySelectorAll("#cartao-parcelas option").forEach((option) => {
     const n = Number(option.value);
     const comJuros = n > 3 ? baseSemJuros * (1 + JUROS_MENSAL * (n - 3)) : baseSemJuros;
-    option.querySelector(`[data-parcela="${n}"]`).textContent = brl(comJuros / n);
+    const semJuros = n <= 3;
+    option.textContent = `${n}x de ${brl(comJuros / n)} ${semJuros ? "(sem juros)" : "(com juros)"}`;
   });
 }
 
@@ -449,6 +482,9 @@ function confirmarPedido() {
     pagamento: {
       metodo: estado.pagamento,
       parcelas: estado.pagamento === "cartao" ? estado.parcelas : 1,
+      // Pix e cartão são aprovados na hora; boleto aguarda compensação.
+      status: estado.pagamento === "boleto" ? "pendente" : "aprovado",
+      aprovadoEm: estado.pagamento === "boleto" ? null : agora.toISOString(),
     },
     valores: {
       subtotal: v.subtotal,
@@ -478,6 +514,8 @@ function confirmarPedido() {
       <div class="col-sm-6"><span class="text-muted-2 d-block">Data</span><strong>${agora.toLocaleString("pt-BR")}</strong></div>
       <div class="col-sm-6"><span class="text-muted-2 d-block">Pagamento</span><strong>${pedido.pagamento.metodo.toUpperCase()}${pedido.pagamento.metodo === "cartao" ? ` · ${pedido.pagamento.parcelas}x` : ""}</strong></div>
       <div class="col-sm-6"><span class="text-muted-2 d-block">Total pago</span><strong class="fs-6 text-success">${brl(pedido.valores.total)}</strong></div>
+      <div class="col-sm-6"><span class="text-muted-2 d-block">Status</span><strong class="${pedido.pagamento.status === "aprovado" ? "text-success" : "text-warning"}">${pedido.pagamento.status === "aprovado" ? "Pagamento aprovado" : "Aguardando pagamento"}</strong></div>
+      <div class="col-sm-6"><span class="text-muted-2 d-block">Telefone</span><strong>${pedido.cliente.telefone || "—"}</strong></div>
       <div class="col-12"><span class="text-muted-2 d-block">Entrega prevista</span><strong>${opcaoFrete.prazo} · ${pedido.endereco.cidade}/${pedido.endereco.uf}</strong></div>
     </div>`;
 

@@ -539,6 +539,37 @@ body {
   border-radius: 1rem;
 }
 .summary-box.sticky-top-2 { top: 92px; }
+
+/* Linha de item do pedido (resumo, checkout e meus pedidos) */
+.order-line {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  min-width: 0;
+  width: 100%;
+}
+.order-line-thumb {
+  width: 52px;
+  height: 64px;
+  flex-shrink: 0;
+  object-fit: cover;
+  border-radius: .55rem;
+  border: 1px solid var(--ch-border);
+}
+.order-line-info {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+}
+.order-line-name { min-width: 0; }
+.order-line-price {
+  flex-shrink: 0;
+  white-space: nowrap;
+  text-align: right;
+}
+.ship-label { min-width: 0; }
+.ship-price { white-space: nowrap; flex-shrink: 0; }
+
 .qty-input { max-width: 130px; }
 .qty-input .form-control { text-align: center; }
 

@@ -157,10 +157,13 @@
                   <label for="input-uf" class="form-label fw-semibold">UF <span class="text-danger">*</span></label>
                   <select class="form-select" id="input-uf" required>
                     <option value="" selected disabled>UF</option>
-                    <option>SP</option><option>RJ</option><option>MG</option><option>RS</option>
-                    <option>PR</option><option>SC</option><option>BA</option><option>PE</option>
-                    <option>DF</option><option>GO</option><option>ES</option><option>AM</option>
-                    <option>PA</option><option>MA</option><option>CE</option><option>Outro</option>
+                    <option>AC</option><option>AL</option><option>AP</option><option>AM</option>
+                    <option>BA</option><option>CE</option><option>DF</option><option>ES</option>
+                    <option>GO</option><option>MA</option><option>MT</option><option>MS</option>
+                    <option>MG</option><option>PA</option><option>PB</option><option>PR</option>
+                    <option>PE</option><option>PI</option><option>RJ</option><option>RN</option>
+                    <option>RS</option><option>RO</option><option>RR</option><option>SC</option>
+                    <option>SP</option><option>SE</option><option>TO</option>
                   </select>
                   <div class="invalid-feedback">Selecione a UF.</div>
                 </div>
@@ -173,9 +176,9 @@
                 <label class="ship-option d-block h-100">
                   <input type="radio" name="frete" value="economico" checked>
                   <div class="payment-option-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                      <strong class="small"><i class="bi bi-box-seam me-1"></i>Econômico</strong>
-                      <strong class="small" data-preco-frete="economico">R$ 19,90</strong>
+                    <div class="d-flex justify-content-between align-items-center gap-2 flex-wrap">
+                      <strong class="small ship-label"><i class="bi bi-box-seam me-1"></i>Econômico</strong>
+                      <strong class="small ship-price" data-preco-frete="economico">R$ 19,90</strong>
                     </div>
                     <small class="text-muted-2">7 a 10 dias úteis</small>
                   </div>
@@ -185,9 +188,9 @@
                 <label class="ship-option d-block h-100">
                   <input type="radio" name="frete" value="expresso">
                   <div class="payment-option-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                      <strong class="small"><i class="bi bi-lightning-charge me-1"></i>Expresso</strong>
-                      <strong class="small" data-preco-frete="expresso">R$ 34,90</strong>
+                    <div class="d-flex justify-content-between align-items-center gap-2 flex-wrap">
+                      <strong class="small ship-label"><i class="bi bi-lightning-charge me-1"></i>Expresso</strong>
+                      <strong class="small ship-price" data-preco-frete="expresso">R$ 34,90</strong>
                     </div>
                     <small class="text-muted-2">2 a 4 dias úteis</small>
                   </div>
@@ -197,11 +200,11 @@
                 <label class="ship-option d-block h-100">
                   <input type="radio" name="frete" value="retirada">
                   <div class="payment-option-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                      <strong class="small"><i class="bi bi-shop me-1"></i>Retirada</strong>
-                      <strong class="small text-success">GRÁTIS</strong>
+                    <div class="d-flex justify-content-between align-items-center gap-2 flex-wrap">
+                      <strong class="small ship-label"><i class="bi bi-shop me-1"></i>Retirada</strong>
+                      <strong class="small ship-price text-success" data-preco-frete="retirada">GRÁTIS</strong>
                     </div>
-                    <small class="text-muted-2">Retire na loja em SP</small>
+                    <small class="text-muted-2">Retire na loja em Cuiabá/MT</small>
                   </div>
                 </label>
               </div>
